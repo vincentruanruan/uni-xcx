@@ -1,11 +1,11 @@
 <template>
-  <view class='index-group develop-group' v-if="!develop"></view>
-  <view class='index-group develop-group' v-else>
+  <view class='index-group develop-group' >
     <view class='title'>
       <view class='dot'></view>{{develop.titlekflc}}
     </view>
-    <view class="bgBlue"></view>
+    <view class="bgBlue" v-if="show"></view>
     <view
+      v-if="show"
       class="uni-flex uni-row develop"
       style="flex-wrap: wrap;"
     >
@@ -38,10 +38,16 @@ export default {
   },
   data() {
     return {
+      show:false,
       mode: "widthFix"
     };
   },
-  mounted() {}
+  mounted() {},
+  updated() {
+    if(this.develop){
+      this.show=true
+    }
+  },
 };
 </script>
 
@@ -110,6 +116,38 @@ export default {
           margin-left: -20px;
         }
       }
+    }
+  }
+}
+
+// 首页框
+.index-group {
+  position: relative;
+  padding: 7.5px;
+  background: #fff;
+  .title {
+    font-weight: 500;
+    display: block;
+    width: 80%;
+    text-align: center;
+    font-size: 24px;
+    line-height: 64px;
+    border-bottom: 1px #abe0ff solid;
+    margin: 0 auto;
+    position: relative;
+    color: #333;
+    margin-bottom: 20px;
+
+    .dot {
+      width: 40px;
+      height: 3px;
+      background: #108bec;
+      line-height: 0;
+      display: inline-block;
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      margin-left: -20px;
     }
   }
 }

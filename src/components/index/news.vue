@@ -1,31 +1,24 @@
 <template>
-  <view class='index-group news-group'>
-    <view class='title'>
-      <view class='dot'></view>{{news.titlexwzx}}
+  <view class="index-group news-group">
+    <view class="title">
+      <view class="dot"></view>
+      {{news.titlexwzx}}
     </view>
-    <view
-      class="uni-flex uni-row news"
-      style="flex-wrap: wrap;"
-    >
-      <view
-        v-for="(item,index) in news.news"
-        :key="index"
-        class="item"
-      >
+    <view v-if="show" class="uni-flex uni-row news" style="flex-wrap: wrap;">
+      <view v-for="(item,index) in news.news" :key="index" class="item">
         <view class="bg uni-flex uni-row">
-          <view class='left'>
-            <view class='month'>{{item.month}}</view>
-            <view class='year'>{{item.year}}</view>
+          <view class="left">
+            <view class="month">{{item.month}}</view>
+            <view class="year">{{item.year}}</view>
           </view>
-          <view class='right'>
-            <view class='inner'>
-              <view class='bg'>
-                <view class='itemTitle'>{{item.title}}</view>
-                <view class='itemDesc'>{{item.abstract}}</view> 
+          <view class="right">
+            <view class="inner">
+              <view class="bg">
+                <view class="itemTitle">{{item.title}}</view>
+                <view class="itemDesc">{{item.abstract}}</view>
               </view>
             </view>
           </view>
-
         </view>
       </view>
     </view>
@@ -40,16 +33,21 @@ export default {
   },
   data() {
     return {
-      news: this.news
+      show:false
     };
   },
-  mounted() {}
+  mounted() {},
+  updated() {
+    if (this.news) {
+      this.show = true;
+    }
+  }
 };
 </script>
 
 
 
-<style lang="scss" scoped>
+<style lang="scss">
 // 服务
 .index-group.news-group {
   padding: 7.5px;
@@ -124,6 +122,38 @@ export default {
           }
         }
       }
+    }
+  }
+}
+
+// 首页框
+.index-group {
+  position: relative;
+  padding: 7.5px;
+  background: #fff;
+  .title {
+    font-weight: 500;
+    display: block;
+    width: 80%;
+    text-align: center;
+    font-size: 24px;
+    line-height: 64px;
+    border-bottom: 1px #abe0ff solid;
+    margin: 0 auto;
+    position: relative;
+    color: #333;
+    margin-bottom: 20px;
+
+    .dot {
+      width: 40px;
+      height: 3px;
+      background: #108bec;
+      line-height: 0;
+      display: inline-block;
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      margin-left: -20px;
     }
   }
 }

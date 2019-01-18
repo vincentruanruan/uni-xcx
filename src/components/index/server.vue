@@ -1,19 +1,13 @@
 <template>
-  <view
-    class='index-group server-group'
-    v-if="!list"
-  >
-  </view>
-  <view
-    class='index-group server-group'
-    v-else
-  >
+
+  <view class='index-group server-group'>
     <view class='title'>
       <view class='dot'></view>{{list.titleourservice}}
     </view>
     <view
       class="uni-flex uni-row list"
       style="flex-wrap: wrap;"
+      v-if="show"
     >
       <view
         v-for="(item,index) in list.server"
@@ -39,20 +33,27 @@
 <script>
 export default {
   props: {
-    list: Object
+    list: Object,
   },
   data() {
     return {
+      show:false,
       mode: "widthFix"
     };
   },
-  mounted() {}
+  updated() {
+    if(this.list){
+      this.show=true
+    }
+  },
+
+
 };
 </script>
 
 
 
-<style lang="scss" scoped>
+<style lang="scss">
 // 服务
 .index-group.server-group {
   padding: 7.5px;
@@ -82,6 +83,38 @@ export default {
         font-size: 14px;
         color: #999;
       }
+    }
+  }
+}
+
+// 首页框
+.index-group {
+  position: relative;
+  padding: 7.5px;
+  background: #fff;
+  .title {
+    font-weight: 500;
+    display: block;
+    width: 80%;
+    text-align: center;
+    font-size: 24px;
+    line-height: 64px;
+    border-bottom: 1px #abe0ff solid;
+    margin: 0 auto;
+    position: relative;
+    color: #333;
+    margin-bottom: 20px;
+
+    .dot {
+      width: 40px;
+      height: 3px;
+      background: #108bec;
+      line-height: 0;
+      display: inline-block;
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      margin-left: -20px;
     }
   }
 }
