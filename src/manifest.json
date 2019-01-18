@@ -47,7 +47,7 @@
 
     },
     "mp-weixin": { /* 小程序特有相关 */
-        "appid": "",
+        "appid": "wxc858585fc49fd8fd",
         "setting" : {
         	"urlCheck" : true
         }
