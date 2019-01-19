@@ -1,28 +1,10 @@
 <template>
-
   <view class="header-box">
-
     <view>
-      <view
-        class="paddingBox"
-        v-if="hasPadding"
-      ></view>
-      <view
-        :class="drop?'floatNav drop':'floatNav'"
-        v-if="show"
-      >
-        <image
-          v-if="drop"
-          class="logo"
-          :src="header.logo[1]"
-          :mode="mode"
-        />
-        <image
-          v-else
-          class="logo"
-          :src="header.logo[0]"
-          :mode="mode"
-        />
+      <view class="paddingBox" v-if="hasPadding"></view>
+      <view :class="drop?'floatNav drop':'floatNav'" v-if="show">
+        <image v-if="drop" class="logo" :src="header.logo[1]" :mode="mode" ></image>
+        <image v-else class="logo" :src="header.logo[0]" :mode="mode" ></image>
         <uni-icon
           class="navBtn"
           type="bars"
@@ -32,11 +14,7 @@
         ></uni-icon>
       </view>
 
-      <uni-drawer
-        :visible="drawer"
-        :mode="modedrawer"
-        @close="navbarClick"
-      >
+      <uni-drawer :visible="drawer" :mode="modedrawer" @close="navbarClick">
         <view style="padding:30upx;">
           <view class="uni-title">导航菜单</view>
           <view class="uni-list uni-common-mt">
@@ -53,11 +31,8 @@
           </view>
         </view>
       </uni-drawer>
-
     </view>
-
   </view>
-
 </template>
 
 
@@ -78,7 +53,7 @@ export default {
     return {
       show: false,
       mode: "aspectFit",
-      navColor1: "#999",
+      navColor1: "#999", 
       navColor2: "#fff",
       drawer: false,
       modedrawer: "right"
@@ -97,9 +72,45 @@ export default {
     menuClick(e) {
       let goto = e.currentTarget.dataset.do;
       console.log(goto);
-      uni.navigateTo({
-        url: "../../pages/about/index"
+      
+      let url = '../../pages/'
+
+      switch (goto) {
+        case "home":
+         url+='inedx/index'
+          break;
+        case "solve":
+         url+=goto+'/index'
+          break;
+        case "xiaochengxu":
+         url+=goto+'/index'
+          break;
+        case "dingzhi":
+         url+=goto+'/index'
+          break;
+        case "daili":
+         url+=goto+'/index'
+          break;
+        case "news":
+         url+=goto+'/index'
+          break;
+        case "about":
+         url+=goto+'/index'
+          break;
+        case "contact":
+         url+=goto+'/index'
+          break;
+        case "help":
+         url+=goto+'/index'
+          break;
+
+        default:
+          break;
+    }
+    uni.navigateTo({
+        url
       });
+
     },
     navbarClick() {
       this.drawer = !this.drawer;
