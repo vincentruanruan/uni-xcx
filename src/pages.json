@@ -5,6 +5,9 @@
 			"style": {
 				"navigationBarTitleText": "xcx"
 			}
+		},
+		{
+			"path": "pages/about/index"
 		}
 	],
 	"globalStyle": {

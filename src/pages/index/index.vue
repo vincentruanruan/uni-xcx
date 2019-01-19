@@ -1,23 +1,35 @@
 <template>
   <view class="index">
+
+    <!-- 头部 -->
+    <headerbox
+      :header="header"
+      :drop="drop"
+    />
+
     <!-- 轮播 -->
-    <banner :carouse="carouse"/>
+    <banner :carouse="carouse" />
 
     <!-- 服务 -->
-    <server :list="list"/>
+    <server :list="list" />
 
     <!-- 案例 -->
-    <cases :cases="cases"/>
+    <cases :cases="cases" />
 
     <!-- 开发 -->
-    <develop :develop="developments"/>
+    <develop :develop="developments" />
 
     <!-- 新闻 -->
-    <news :news="news"/>
+    <news :news="news" />
+
+    <!-- 底部 -->
+    <footerbox :footer="footer" />
   </view>
 </template>
 
 <script>
+import headerbox from "../../components/headerbox";
+import footerbox from "../../components/footerbox";
 import banner from "../../components/index/banner";
 import server from "../../components/index/server";
 import develop from "../../components/index/develop";
@@ -27,6 +39,9 @@ import cases from "../../components/index/cases";
 export default {
   data() {
     return {
+      // 页面需要的参数
+      drop: false,
+      // 下面是接口参数
       header: {},
       footer: {},
       title: "",
@@ -38,6 +53,8 @@ export default {
     };
   },
   components: {
+    headerbox,
+    footerbox,
     banner,
     server,
     develop,
@@ -50,7 +67,10 @@ export default {
   mounted() {
     // console.log(this.$store.state.baseUrl);
   },
-
+  onPageScroll(obj) {
+    // console.log(obj); //实时获取到滚动的值
+    obj.scrollTop > 30 ? (this.drop = true) : (this.drop = false);
+  },
   methods: {
     getData() {
       uni.request({
@@ -73,6 +93,9 @@ export default {
             this.list = dt.list;
             this.news = dt.news;
           }
+          uni.setNavigationBarTitle({
+            title: this.title
+          });
         }
       });
     }
@@ -81,5 +104,10 @@ export default {
 </script>
 
 <style lang="scss">
-
+headerbox {
+  z-index: 99;
+}
+banner {
+  z-index: -1;
+}
 </style>
