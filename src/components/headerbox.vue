@@ -73,7 +73,7 @@ export default {
       let goto = e.currentTarget.dataset.do;
       console.log(goto);
       
-      let url = '../../pages/'
+      let url = '/pages/'
 
       switch (goto) {
         case "home":
@@ -107,9 +107,22 @@ export default {
         default:
           break;
     }
-    uni.navigateTo({
-        url
+
+    let pages = getCurrentPages()
+    let nowRoute = pages[pages.length-1].route
+    console.log(pages)
+
+    if(nowRoute=='pages/index/index'){
+      uni.navigateTo({
+          url
       });
+    }else{
+      uni.redirectTo({
+          url: url
+      });
+    }
+    
+    
 
     },
     navbarClick() {

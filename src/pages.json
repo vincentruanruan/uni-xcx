@@ -24,6 +24,9 @@
 			"path": "pages/news/index"
 		},
 		{
+			"path": "pages/news/desc"
+		},
+		{
 			"path": "pages/about/index"
 		},
 		{

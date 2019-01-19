@@ -6,8 +6,8 @@
 export default {
     methods:{
         next:()=>{
-            uni.navigateTo({
-                url:'./desc'
+            uni.redirectTo({
+                url:'/pages/about/index'
             })
         }
     }
