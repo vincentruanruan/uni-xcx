@@ -26,5 +26,6 @@ mp-weixin   微信小程序
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-See [Configuration Reference](https://uniapp.dcloud.io/).
+See [Configuration Reference vuejs](https://cli.vuejs.org/config/).
+
+See [Configuration Reference uniapp](https://uniapp.dcloud.io/).
