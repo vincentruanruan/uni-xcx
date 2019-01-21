@@ -4,15 +4,19 @@
     <view class='btnsList'>
 
       <view
-      v-for="(item,index) in footer.menu"
+        v-for="(item,index) in footer.menu"
         class='item'
         :key="index"
         :data-do="item.do"
+        @click="navTo"
       >{{item.title}}</view>
 
     </view>
 
-    <view class='info' v-if="show">
+    <view
+      class='info'
+      v-if="show"
+    >
       <view class='item'>
         <AtIcon
           class='icon'
@@ -43,7 +47,10 @@
       </view>
     </view>
 
-    <view class='qrcode' v-if="show">
+    <view
+      class='qrcode'
+      v-if="show"
+    >
       <image
         class="icon"
         src='http://hidsy.maimaitoo.com/attachment/images/1/2018/12/FkZfff1CKzHr3C0577PKP79H5GFk0U.jpg'
@@ -71,6 +78,16 @@ export default {
   updated() {
     if (this.footer) {
       this.show = true;
+    }
+  },
+  methods: {
+    navTo(e) {
+      let goto = e.currentTarget.dataset.do;
+      let pages = getCurrentPages();
+      this.$store.commit("navGoto", {
+        goto: goto,
+        pages: pages
+      });
     }
   }
 };
@@ -111,7 +128,7 @@ export default {
   }
 
   .qrcode {
-    margin-top: 10px;;
+    margin-top: 10px;
     text-align: center;
     color: #fff;
     font-size: 14px;

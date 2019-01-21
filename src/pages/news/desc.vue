@@ -1,5 +1,5 @@
 <template>
-    <view @click="next"> news </view>
+    <view @click="next"> desc </view>
 </template>
     
 <script>

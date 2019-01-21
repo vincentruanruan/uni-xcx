@@ -41,6 +41,7 @@ export default {
     return {
       // 页面需要的参数
       drop: false,
+      gotoUrl: "",
       // 下面是接口参数
       header: {},
       footer: {},
@@ -60,6 +61,9 @@ export default {
     develop,
     news,
     cases
+  },
+  onShow() {
+    console.log('gotoUrl: '+this.gotoUrl)
   },
   onLoad() {
     this.getData();
