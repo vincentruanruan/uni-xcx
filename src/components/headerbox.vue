@@ -57,8 +57,8 @@
 
 
 <script>
-import uniIcon from "./uni/uni-icon.vue";
-import uniDrawer from "./uni/uni-drawer.vue";
+import uniIcon from "@dcloudio/uni-ui/lib/uni-icon/uni-icon.vue";
+import uniDrawer from "@dcloudio/uni-ui/lib/uni-drawer/uni-drawer.vue";
 export default {
   props: {
     header: Object,

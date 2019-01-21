@@ -65,6 +65,7 @@
 
 
 <script>
+import uniIcon from "@dcloudio/uni-ui/lib/uni-icon/uni-icon.vue";
 export default {
   props: {
     footer: Object
