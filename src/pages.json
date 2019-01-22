@@ -1,7 +1,9 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		
-		
+		{
+			"path": "pages/xiaochengxu/index"
+		},
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -14,9 +16,7 @@
 		{
 			"path": "pages/solve/desc"
 		},
-		{
-			"path": "pages/xiaochengxu/index"
-		},
+		
 		{
 			"path": "pages/dingzhi/index"
 		},
