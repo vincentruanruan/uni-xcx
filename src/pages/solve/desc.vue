@@ -16,14 +16,14 @@
         :mode="mode"
         lazy-load
       ></image>
-      <div class="title">{{title}}</div>
+      <div class="title">{{banner.solvetitle}}</div>
     </div>
 
     <!-- 按钮组 -->
     <div class="btn-group">
       <div
         :class="action == item.id?'item action':'item'"
-        v-for="(item,index) in category.categorys"
+        v-for="(item,index) in categorys"
         :key="index"
         :data-id="item.id"
         @click="changeActon"
@@ -32,16 +32,33 @@
       </div>
     </div>
 
+    <!-- 内容 -->
+    <div class="info">
+      <div class="header">{{info.title}}</div>
+      <div class="time">{{info.addtime}}
+        <div class="num">
+          <uni-icon
+            class="navBtn"
+            type="eye"
+            size="15"
+          ></uni-icon>{{info.count}}
+        </div>
+      </div>
+
+      <div class="content">
+        <wxParse :content="info.content" />
+      </div>
+    </div>
+
     <!-- 列表 -->
     <div
       v-if="show"
       class="uni-flex uni-row list"
     >
+      <div class="header">相关案例</div>
       <div
-        v-for="(item,index) in category.list"
+        v-for="(item,index) in referrals"
         :key="index"
-        :data-id="item.id"
-        @click="gotoDesc"
         class="item"
       >
         <div class="bg">
@@ -53,18 +70,10 @@
             lazy-load
           ></image>
           <div class="itemTitle">{{item.title}}</div>
-          <div class="itemDesc">{{item.categoryname}}</div>
 
         </div>
       </div>
     </div>
-
-    <!-- 分页 -->
-    <pagebox
-      :change="pageChange"
-      :current="nowPage"
-      :total="allpage"
-    ></pagebox>
 
     <!-- 底部 -->
     <footerbox :footer="footer" />
@@ -75,7 +84,8 @@
 <script>
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
-import pagebox from "../../components/pagebox";
+import uniIcon from "@dcloudio/uni-ui/lib/uni-icon/uni-icon.vue";
+import wxParse from "mpvue-wxparse";
 export default {
   data() {
     return {
@@ -83,48 +93,35 @@ export default {
       mode: "widthFix",
       show: false,
       action: 0,
-      nowPage: 1,
-      allpage: 1,
+      id: 0,
       // 下面是接口参数
       header: {},
       footer: {},
       title: "",
       banner: {},
-      category: {}
+      categorys: {},
+      referrals: {},
+      info: {}
     };
   },
-  mounted() {
+  onLoad(option) {
+    this.id = option.id;
+    // this.id = 6;
     this.getData();
-    this.$ee.on("descback", res => {
-      this.action = res.action;
-      this.nowPage = 1;
-      this.getData();
-      // console.log(res)
-    });
   },
   components: {
     headerbox,
     footerbox,
-    pagebox
+    uniIcon,
+    wxParse
   },
   methods: {
-    gotoDesc(e) {
-      let id = e.currentTarget.dataset.id;
-      uni.navigateTo({
-        url: `desc?id=${id}`
-      });
-    },
     changeActon(e) {
       let id = e.currentTarget.dataset.id;
-      this.action = id;
-      this.nowPage = 1;
-      //   console.log(id);
-      this.getData();
-    },
-    pageChange(data) {
-      // console.log(data);
-      this.nowPage = data.current;
-      this.getData();
+      this.$ee.fire("descback", { action: id });
+      uni.navigateBack({
+        delta: 1
+      });
     },
     getData() {
       // console.log("cid " + this.action);
@@ -132,10 +129,9 @@ export default {
       uni.request({
         url:
           this.$store.state.baseUrl +
-          "/web/index.php?c=account&a=welcome&do=solveapi",
+          "/web/index.php?c=account&a=welcome&do=solvedetailapi",
         data: {
-          page: this.nowPage,
-          cid: this.action
+          id: this.id
         },
         method: this.$store.state.baseUrl.method,
         header: this.$store.state.baseUrl.header,
@@ -148,8 +144,9 @@ export default {
             this.footer = dt.footer;
             this.title = dt.title;
             this.banner = dt.banner;
-            this.category = dt.category;
-            this.allpage = dt.allpage;
+            this.categorys = dt.categorys;
+            this.referrals = dt.referrals;
+            this.info = dt.info;
           }
           this.show = true;
           uni.setNavigationBarTitle({
@@ -168,6 +165,7 @@ export default {
 
 <style lang="scss">
 .solve {
+  background: #f9f9f9;
   .banner {
     position: relative;
     .bg {
@@ -182,6 +180,7 @@ export default {
     }
   }
   .btn-group {
+    background: #fff;
     padding: 3px 0px;
     .item {
       padding: 3px 0px;
@@ -196,14 +195,24 @@ export default {
   }
   .list {
     padding: 7.5px;
-    background: #f9f9f9;
+
     flex-wrap: wrap;
+    .header {
+      font-size: 20px;
+      // font-weight: bold;
+      padding-left: 5px;
+      color: #444;
+      display: block;
+      width: 100%;
+    }
     .item {
       padding: 7.5px;
       box-sizing: border-box;
       width: 50%;
       display: inline-block;
       .bg {
+        border-radius: 5px;
+        overflow: hidden;
         background: #fff;
         padding-bottom: 10px;
         .itemIcon {
@@ -212,6 +221,7 @@ export default {
         .itemTitle {
           color: #333;
           padding: 0px 10px;
+          font-size: 13px;
         }
         .itemDesc {
           color: #999;
@@ -219,6 +229,32 @@ export default {
           font-size: 12px;
         }
       }
+    }
+  }
+  .info {
+    background: #fff;
+    margin: 20px 0;
+    padding: 15px;
+
+    .header {
+      font-size: 22px;
+      color: #444;
+      margin-bottom: 10px;
+    }
+    .time {
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 10px;
+      .num {
+        float: right;
+        color: #999;
+        .uni-icon {
+          margin-right: 5px;
+        }
+      }
+    }
+    .content {
+      padding: 15px 0 20px 0;
     }
   }
 }

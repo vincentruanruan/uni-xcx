@@ -182,7 +182,7 @@ export default {
     }
   }
   .btn-group {
-    padding: 3px 15px;
+    padding: 3px 0px;
     .item {
       padding: 3px 0px;
       margin: 0 5px;

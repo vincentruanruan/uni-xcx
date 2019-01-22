@@ -12,6 +12,9 @@
 			"path": "pages/solve/index"
 		},
 		{
+			"path": "pages/solve/desc"
+		},
+		{
 			"path": "pages/xiaochengxu/index"
 		},
 		{
