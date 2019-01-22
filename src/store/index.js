@@ -3,10 +3,13 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
-        baseUrl: 'http://hidsy.maimaitoo.com'
+        baseUrl: 'http://hidsy.maimaitoo.com',
+        header: { "content-type": "application/x-www-form-urlencoded" },
+        method: "POST",
     },
     mutations: {
-        navGoto(state, stark) {
+
+        navGoto(state, stark) { // 页面跳转方法
             console.log(stark)
 
             let url = "/pages/";
@@ -45,8 +48,6 @@ const store = new Vuex.Store({
                 default:
                     break;
             }
-
-
             let nowRoute = pages[pages.length - 1].route;
             let homeRoute = pages[0].route;
             // console.log('goto:' + goto);

@@ -18,7 +18,6 @@
     </div>
 
     <!-- 按钮组 -->
-
     <div class="btn-group">
       <div
         :class="action == item.id?'item action':'item'"
@@ -40,6 +39,8 @@
         v-for="(item,index) in list"
         :key="index"
         class="item"
+        :data-id="item.id"
+        @click="gotoDesc"
       >
         <view class="bg uni-flex uni-row">
           <view class="left">
@@ -98,6 +99,12 @@ export default {
   },
   mounted() {
     this.getData();
+    this.$ee.on("descback", res => {
+      this.action = res.action;
+      this.nowPage = 1;
+      this.getData();
+      // console.log(res)
+    });
   },
   components: {
     headerbox,
@@ -105,8 +112,15 @@ export default {
     pagebox
   },
   methods: {
+    gotoDesc(e) {
+      let id = e.currentTarget.dataset.id;
+      // console.log(id)
+      uni.navigateTo({
+        url: `desc?id=${id}`
+      });
+    },
     pageChange(data) {
-      console.log(data);
+      // console.log(data);
       this.nowPage = data.current;
       this.getData();
     },
@@ -118,8 +132,8 @@ export default {
       this.getData();
     },
     getData() {
-      console.log("cid " + this.action);
-      console.log("nowPage " + this.nowPage);
+      // console.log("cid " + this.action);
+      // console.log("nowPage " + this.nowPage);
       uni.request({
         url:
           this.$store.state.baseUrl +
@@ -128,8 +142,8 @@ export default {
           cid: this.action,
           page: this.nowPage
         },
-        method: "POST",
-        header: { "content-type": "application/x-www-form-urlencoded" },
+        method: this.$store.state.baseUrl.method,
+        header: this.$store.state.baseUrl.header,
         success: res => {
           console.log(res.data);
           if (res.data.code == 200) {
@@ -148,6 +162,10 @@ export default {
           this.show = true;
           uni.setNavigationBarTitle({
             title: this.title
+          });
+          uni.pageScrollTo({
+            scrollTop: 0,
+            duration: 300
           });
         }
       });
@@ -178,6 +196,9 @@ export default {
     }
   }
   .news {
+    .item:active {
+      background: #f0f0f0;
+    }
     .item {
       width: 100%;
       padding: 7.5px;

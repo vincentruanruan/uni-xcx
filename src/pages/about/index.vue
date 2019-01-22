@@ -2,78 +2,83 @@
   <view class="about">
     <div>
 
-    <!-- 头部 -->
-    <headerbox :header="header" drop="false" hasPadding="true"/>
-        
-    <!-- banner -->
-    <div class="banner">
-        <image class="bg" :src="banner.about" :mode="mode" ></image>
-    </div>
+      <!-- 头部 -->
+      <headerbox
+        :header="header"
+        drop="false"
+        hasPadding="true"
+      />
 
-    <!-- 简介 -->
-    <div class="desc">{{banner.contend}}</div>
+      <!-- banner -->
+      <div class="banner">
+        <image
+          class="bg"
+          :src="banner.about"
+          :mode="mode"
+        ></image>
+      </div>
 
-    <!-- 内容 团队 -->
-    <div class="about-group teams">
+      <!-- 简介 -->
+      <div class="desc">{{banner.contend}}</div>
+
+      <!-- 内容 团队 -->
+      <div class="about-group teams">
         <div class="title-cn">{{teamstitle.title}}</div>
         <div class="title-en">{{teamstitle.subhead}}</div>
         <view
-            class="uni-flex uni-row list"
-            style="flex-wrap: wrap;"
-            v-if="show"
+          class="uni-flex uni-row list"
+          style="flex-wrap: wrap;"
+          v-if="show"
         >
-            <view
-                v-for="(item,index) in teams"
-                :key="index"
-                class="item"
-            >
-                <view class="bg">
-                    <image
-                        class="itemIcon"
-                        :mode="mode"
-                        :src="item.image"
-                        lazy-load
-                    ></image>
-                    <view class="itemTitle">{{item.name}}</view>
-                    <view class="itemDesc">{{item.zhiwei}}</view>
-                </view>
+          <view
+            v-for="(item,index) in teams"
+            :key="index"
+            class="item"
+          >
+            <view class="bg">
+              <image
+                class="itemIcon"
+                :mode="mode"
+                :src="item.image"
+                lazy-load
+              ></image>
+              <view class="itemTitle">{{item.name}}</view>
+              <view class="itemDesc">{{item.zhiwei}}</view>
             </view>
+          </view>
         </view>
-    </div>
+      </div>
 
-    <!-- 内容 证书 -->
-    <div class="about-group carts">
+      <!-- 内容 证书 -->
+      <div class="about-group carts">
         <div class="title-cn">{{teamstitle.title}}</div>
         <div class="title-en">{{teamstitle.subhead}}</div>
         <view
-            class="uni-flex uni-row list"
-            style="flex-wrap: wrap;"
-            v-if="show"
+          class="uni-flex uni-row list"
+          style="flex-wrap: wrap;"
+          v-if="show"
         >
-            <view
-                v-for="(item,index) in teams"
-                :key="index"
-                class="item"
-            >
-                <view class="bg">
-                    <image
-                        class="itemIcon"
-                        :mode="mode"
-                        :src="item.image"
-                        lazy-load
-                    ></image>
-                    <view class="itemTitle">{{item.name}}</view>
-                    <view class="itemDesc">{{item.zhiwei}}</view>
-                </view>
+          <view
+            v-for="(item,index) in teams"
+            :key="index"
+            class="item"
+          >
+            <view class="bg">
+              <image
+                class="itemIcon"
+                :mode="mode"
+                :src="item.image"
+                lazy-load
+              ></image>
+              <view class="itemTitle">{{item.name}}</view>
+              <view class="itemDesc">{{item.zhiwei}}</view>
             </view>
+          </view>
         </view>
-    </div>
+      </div>
 
-
-
-
-    <!-- 底部 -->
-    <footerbox :footer="footer"/>
+      <!-- 底部 -->
+      <footerbox :footer="footer" />
 
     </div>
   </view>
@@ -86,17 +91,17 @@ export default {
   data() {
     return {
       // 页面需要的参数
-        mode: "widthFix",
-        show:false,
+      mode: "widthFix",
+      show: false,
       // 下面是接口参数
-        header: {},
-        footer: {},
-        title: "",
-        banner: {},
-        teamstitle: {},
-        teams: {},
-        certstitle: {},
-        certs: {}
+      header: {},
+      footer: {},
+      title: "",
+      banner: {},
+      teamstitle: {},
+      teams: {},
+      certstitle: {},
+      certs: {}
     };
   },
   mounted() {
@@ -113,7 +118,8 @@ export default {
           this.$store.state.baseUrl +
           "/web/index.php?c=account&a=welcome&do=aboutapi",
         data: {},
-        method: "POST",
+        method: this.$store.state.baseUrl.method,
+        header: this.$store.state.baseUrl.header,
         success: res => {
           console.log(res.data);
           if (res.data.code == 200) {
@@ -128,7 +134,7 @@ export default {
             this.certstitle = dt.certstitle;
             this.certs = dt.certs;
           }
-          this.show = true
+          this.show = true;
           uni.setNavigationBarTitle({
             title: this.title
           });
@@ -140,73 +146,70 @@ export default {
 </script>
 
 <style lang="scss">
+.about {
+  .banner {
+    .bg {
+      width: 100%;
+    }
+  }
+  .desc {
+    padding: 15px;
+    text-indent: 2em;
+    font-size: 15px;
+    color: #999;
+  }
+  .about-group {
+    margin: 20px 0;
+    text-align: center;
+    .title-cn {
+      font-size: 30px;
+      color: #333;
+    }
+    .title-en {
+      font-size: 20px;
+      color: #999;
+    }
+    .list {
+      padding: 7.5px;
+      .item {
+        padding: 7.5px;
+        box-sizing: border-box;
+        width: 50%;
 
-.about{
-    .banner{
-        .bg{
-            width: 100%;
+        margin: 10px 0;
+        .itemIcon {
+          width: 80%;
         }
+        .itemTitle {
+          margin-top: 10px;
+          margin-bottom: 3px;
+          color: #333;
+        }
+        .itemDesc {
+          color: #999;
+        }
+      }
     }
-    .desc{
-        padding: 15px;
-        text-indent: 2em;
-        font-size: 15px;
-        color: #999;
+  }
+  .about-group.teams {
+    .list {
+      .item {
+        .itemIcon {
+          border-radius: 50%;
+          box-shadow: rgba(64, 158, 255, 0.2) 1px 1px 20px;
+        }
+      }
     }
-    .about-group{
-        margin: 20px 0;
-        text-align: center;
-        .title-cn{
-            font-size: 30px;
-            color: #333;
+  }
+  .about-group.carts {
+    .list {
+      .item {
+        .itemIcon {
+          border-radius: 7px;
+          box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 20px;
         }
-        .title-en{
-            font-size: 20px;
-            color: #999;
-        }
-        .list{
-            padding: 7.5px;
-            .item{
-                padding: 7.5px;
-                box-sizing: border-box;
-                width: 50%;
-                
-                margin: 10px 0;
-                .itemIcon{
-                    width: 80%;
-                   
-                }
-                .itemTitle{
-                    margin-top: 10px;
-                    margin-bottom: 3px;
-                    color: #333;
-                }
-                .itemDesc{
-                    color: #999;
-                }
-            }
-        }
+      }
     }
-    .about-group.teams{
-        .list{
-            .item{
-                .itemIcon{
-                    border-radius: 50%;
-                    box-shadow: rgba(64, 158, 255,0.2) 1px 1px 20px;
-                }
-            }
-        }
-    }
-    .about-group.carts{
-        .list{
-            .item{
-                .itemIcon{
-                    border-radius: 7px;
-                    box-shadow: rgba(0, 0, 0,0.1) 1px 1px 20px;
-                }
-            }
-        }
-    }
+  }
 }
-
 </style>
