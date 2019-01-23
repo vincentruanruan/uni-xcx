@@ -122,7 +122,6 @@ export default {
       mode: "widthFix",
       show: false,
       action: 0,
-      nowPage: 1,
       // 下面是接口参数
       header: {},
       footer: {},
