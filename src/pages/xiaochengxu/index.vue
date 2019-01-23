@@ -37,26 +37,73 @@
             ></image>
             <div class="right">
               <div class="itemTitle">{{item.title}}</div>
-              <div class="itemTitle">{{item.abstract}}</div>
+              <div class="itemDesc">{{item.abstract}}</div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- 列表 case -->
-    <div class="group group-case">
-      <div class="title-cn">{{xiaochengx.titlexcxrk}}</div>
-      <div class="title-en">{{xiaochengx.titlexcxrken}}</div>
-      <div class="list"></div>
+    <div
+      class="group group-case"
+      v-if="show"
+    >
+      <div class="title-cn">{{cases.titlebfanzs}}</div>
+      <div class="title-en">{{cases.titlebfanzsen}}</div>
+      <div class="btnList">
+        <div
+          :class="item.id==action?'btn action':'btn'"
+          v-for="(item,index) in cases.casemenu"
+          :key="index"
+          :data-id="item.id"
+          @click="changeAction"
+        >{{item.categoryname}}</div>
+      </div>
+      <div class="list">
+        <div
+          class="item"
+          v-for="(item,index) in cases.list[action].cases"
+          :key="index"
+        >
+          <div class="bg">
+            <image
+              class="itemIcon"
+              :mode="mode"
+              :src="item.image"
+              lazy-load
+            ></image>
+            <div class="right">
+              <div class="itemTitle">{{item.title}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 列表 client -->
     <div class="group group-client">
-      <div class="title-cn"></div>
-      <div class="title-en"></div>
-      <div class="list"></div>
+      <div class="title-cn">{{client.titlesykh}}</div>
+      <div class="title-en">{{client.titlesykhen}}</div>
+      <div class="list">
+        <div
+          class="item"
+          v-for="(item,index) in client.client"
+          :key="index"
+        >
+          <div class="bg">
+            <image
+              class="itemIcon"
+              :mode="mode"
+              :src="item.image"
+              lazy-load
+            ></image>
+            <div class="right">
+              <div class="itemTitle">{{item.title}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 底部 -->
@@ -81,25 +128,24 @@ export default {
       footer: {},
       title: "",
       banner: {},
-      case: {},
+      cases: {},
       xiaochengx: {},
       client: {}
     };
   },
   mounted() {
     this.getData();
-    this.$ee.on("descback", res => {
-      this.action = res.action;
-      this.nowPage = 1;
-      this.getData();
-      // console.log(res)
-    });
   },
   components: {
     headerbox,
     footerbox
   },
   methods: {
+    changeAction(e) {
+      let id = e.currentTarget.dataset.id;
+      // console.log(id);
+      this.action = id;
+    },
     getData() {
       // console.log("cid " + this.action);
       // console.log("nowPage " + this.nowPage);
@@ -120,7 +166,7 @@ export default {
             this.title = dt.title;
             this.banner = dt.banner;
             this.xiaochengx = dt.xiaochengx;
-            this.case = dt.case;
+            this.cases = dt.case;
             this.client = dt.client;
           }
           this.show = true;
@@ -154,25 +200,26 @@ export default {
     }
   }
   .group {
-    margin-top: 20px;
-    text-align: center;
+    padding-top: 20px;
     .title-cn {
       font-size: 23px;
       color: #333;
+      text-align: center;
       //   font-weight: bold;
     }
     .title-en {
       //   font-weight: bold;
       color: #999;
       font-size: 15px;
+      text-align: center;
     }
     .list {
       margin-top: 20px;
     }
   }
   .group-xiaochengx {
-    background: yellow;
-
+    background: #f9f9f9;
+    padding-bottom: 30px;
     .list {
       text-align: left;
       padding: 7.5px;
@@ -185,6 +232,11 @@ export default {
           background: #fff;
           padding: 10px;
           position: relative;
+          height: 60px;
+          box-sizing: border-box;
+          border-radius: 30px;
+          box-shadow: rgba($color: #000, $alpha: 0.1) 1px 1px 5px;
+          overflow: hidden;
           .itemIcon {
             height: 40px;
             width: 40px;
@@ -192,8 +244,9 @@ export default {
           }
           .right {
             position: absolute;
-            top: 0;
+            top: 5px;
             padding-left: 50px;
+            padding-right: 10px;
             text-overflow: -o-ellipsis-lastline;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -201,6 +254,76 @@ export default {
             -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
           }
+          .itemDesc {
+            color: #999;
+          }
+        }
+      }
+    }
+  }
+  .group-case {
+    .btnList {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      text-align: center;
+      padding: 10px;
+
+      .btn {
+        display: inline-block;
+        border: 1px solid #eaeaea;
+        color: #999;
+        margin: 8px 5px;
+        display: inline-block;
+        padding: 3px 10px;
+        font-size: 14px;
+        border-radius: 0.9rem;
+      }
+
+      .btn.action {
+        background: #108bec;
+        border: 1px #108bec solid;
+        color: #fff;
+      }
+    }
+    .list {
+      padding: 7.5px;
+      box-sizing: border-box;
+      .item {
+        padding: 7.5px;
+        width: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        padding-bottom: 15px;
+        text-align: center;
+        .itemIcon {
+          width: 100%;
+          border-radius: 5px;
+        }
+      }
+    }
+  }
+  .group-client {
+    .list {
+      padding: 7.5px;
+      box-sizing: border-box;
+      .item {
+        padding: 7.5px;
+        width: 25%;
+        display: inline-block;
+        box-sizing: border-box;
+        padding-bottom: 15px;
+        text-align: center;
+        .itemIcon {
+          width: 100%;
+          border-radius: 5px;
+        }
+        .itemTitle {
+          text-overflow: -o-ellipsis-lastline;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
         }
       }
     }
