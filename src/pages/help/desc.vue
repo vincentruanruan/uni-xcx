@@ -1,5 +1,5 @@
 <template>
-  <div class="solve">
+  <div class="help">
 
     <!-- 头部 -->
     <headerbox
@@ -12,11 +12,18 @@
     <div class="banner">
       <image
         class="bg"
-        :src="banner.solve"
+        :src="banner.help"
         :mode="mode"
-        lazy-load
       ></image>
-      <div class="title">{{banner.solvetitle}}</div>
+      <div class="title">{{banner.helptitle}}</div>
+      <view class='inputGroup'>
+        <input
+          class='keyword'
+          placeholder="请输入你要查询的内容"
+          :value="keyword"
+          @confirm="keywordChage"
+        />
+      </view>
     </div>
 
     <!-- 按钮组 -->
@@ -32,47 +39,64 @@
       </div>
     </div>
 
-    <!-- 内容 -->
+    <!-- info -->
     <div class="info">
-      <div class="header">{{info.title}}</div>
-      <div class="time">{{info.addtime}}
-        <div class="num">
-          <uni-icon
-            class="navBtn"
-            type="eye"
-            size="15"
-          ></uni-icon>{{info.count}}
-        </div>
-      </div>
-
+      <div class="title">{{info.title}}</div>
+      <div class="addtime">{{info.addtime}}</div>
       <div class="content">
         <wxParse :content="info.content" />
       </div>
     </div>
 
     <!-- 列表 -->
-    <div
-      v-if="show"
-      class="uni-flex uni-row list"
-    >
-      <div class="header">相关案例</div>
-      <div
-        v-for="(item,index) in referrals"
-        :key="index"
-        class="item"
-      >
-        <div class="bg">
-
-          <image
-            class="itemIcon"
-            :mode="mode"
-            :src="item.image"
-            lazy-load
-          ></image>
-          <div class="itemTitle">{{item.title}}</div>
-
+    <div class="lists">
+      <div class="bg">
+        <div
+          class="item"
+          v-for="(item,index) in lists"
+          :key="index"
+        >
+          <div class="bg">
+            <image
+              class="icon"
+              :src="item.image"
+              :mode="mode"
+            ></image>
+            <div class="right">
+              <div class="title">{{item.title}}</div>
+              <div class="desc">{{item.abstract}}</div>
+            </div>
+            <div class="time">{{item.addtime}}</div>
+          </div>
         </div>
       </div>
+    </div>
+
+    <div class="page-box">
+
+      <button
+        type="default"
+        class="left"
+        v-if="prev.length>0"
+      >上一篇：</button>
+      <button
+        type="default"
+        class="left"
+        disabled="true"
+        v-if="prev.length<=0"
+      >上一篇：没有了</button>
+
+      <button
+        type="default"
+        class="right"
+        v-if="next.length>0"
+      >下一篇：</button>
+      <button
+        type="default"
+        class="right"
+        disabled="true"
+        v-if="next.length<=0"
+      >下一篇：没有了</button>
     </div>
 
     <!-- 底部 -->
@@ -84,7 +108,6 @@
 <script>
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
-import uniIcon from "@dcloudio/uni-ui/lib/uni-icon/uni-icon.vue";
 import wxParse from "mpvue-wxparse";
 export default {
   data() {
@@ -93,43 +116,55 @@ export default {
       mode: "widthFix",
       show: false,
       action: 0,
-      id: 0,
+
+      keyword: "",
       // 下面是接口参数
       header: {},
       footer: {},
       title: "",
       banner: {},
       categorys: {},
-      referrals: {},
-      info: {}
+      lists: {},
+      info: {},
+      prev: {},
+      next: {}
     };
   },
   onLoad(option) {
     this.id = option.id;
-    // this.id = 6;
+    this.id = 1;
     this.getData();
   },
   components: {
     headerbox,
     footerbox,
-    uniIcon,
     wxParse
   },
   methods: {
-    changeActon(e) {
-      let id = e.currentTarget.dataset.id;
-      this.$ee.fire("descback", { action: id });
+    keywordChage(e) {
+      // console.log(e.detail.value);
+      this.keyword = e.detail.value;
+      this.$ee.fire("kwback", { keyword: this.keyword });
       uni.navigateBack({
         delta: 1
       });
     },
+    changeActon(e) {
+      let id = e.currentTarget.dataset.id;
+      this.$ee.fire("acback", { action: id });
+      uni.navigateBack({
+        delta: 1
+      });
+    },
+    pageChange(data) {
+      this.nowPage = data.current;
+      this.getData();
+    },
     getData() {
-      // console.log("cid " + this.action);
-      // console.log("nowPage " + this.nowPage);
       uni.request({
         url:
           this.$store.state.baseUrl +
-          "/web/index.php?c=account&a=welcome&do=solvedetailapi",
+          "/web/index.php?c=account&a=welcome&do=helpdetailapi",
         data: {
           id: this.id
         },
@@ -145,8 +180,9 @@ export default {
             this.title = dt.title;
             this.banner = dt.banner;
             this.categorys = dt.categorys;
-            this.referrals = dt.referrals;
             this.info = dt.info;
+            this.prev = dt.prev;
+            this.next = dt.next;
           }
           this.show = true;
           uni.setNavigationBarTitle({
@@ -164,8 +200,7 @@ export default {
 </script>
 
 <style lang="scss">
-.solve {
-  background: #f9f9f9;
+.help {
   .banner {
     position: relative;
     .bg {
@@ -178,13 +213,31 @@ export default {
       font-size: 20px;
       color: #fff;
     }
+    .inputGroup {
+      position: absolute;
+      top: 25px;
+      right: 20px;
+      border-radius: 3px;
+      background: #fff;
+      overflow: hidden;
+      font-size: 12px;
+      padding: 0 10px;
+      .keyword {
+        line-height: 30px;
+        height: 30px;
+        width: 140px;
+        margin-top: 3px;
+        display: inline-block;
+        background: #fff;
+      }
+    }
   }
   .btn-group {
-    background: #fff;
     padding: 3px 0px;
     .item {
       padding: 3px 0px;
       margin: 0 5px;
+      //   margin-right: 5px;
       font-size: 15px;
       display: inline-block;
       border-bottom: #fff 1px solid;
@@ -193,69 +246,26 @@ export default {
       border-bottom: rgb(64, 158, 255) 1px solid;
     }
   }
-  .list {
-    padding: 7.5px;
-
-    flex-wrap: wrap;
-    .header {
-      font-size: 20px;
-      // font-weight: bold;
-      padding-left: 5px;
-      color: #444;
-      display: block;
-      width: 100%;
-    }
-    .item {
-      padding: 7.5px;
-      box-sizing: border-box;
-      width: 50%;
-      display: inline-block;
-      .bg {
-        border-radius: 5px;
-        overflow: hidden;
-        background: #fff;
-        padding-bottom: 10px;
-        .itemIcon {
-          width: 100%;
-        }
-        .itemTitle {
-          color: #333;
-          padding: 0px 10px;
-          font-size: 13px;
-        }
-        .itemDesc {
-          color: #999;
-          padding: 0px 10px;
-          font-size: 12px;
-        }
-      }
-    }
-  }
   .info {
-    background: #fff;
-    margin: 20px 0;
-    padding: 15px;
-
-    .header {
+    padding: 0 15px;
+    margin-bottom: 20px;
+    .title {
       font-size: 22px;
       color: #444;
-      margin-bottom: 10px;
+      font-weight: bold;
+      margin-top: 15px;
     }
-    .time {
+    .addtime {
+      font-size: 14px;
       color: #999;
+      padding: 10px 0;
       border-bottom: 1px solid #f0f0f0;
-      padding-bottom: 10px;
-      .num {
-        float: right;
-        color: #999;
-        .uni-icon {
-          margin-right: 5px;
-        }
-      }
     }
     .content {
-      padding: 15px 0 20px 0;
-      width: 100% !important;
+      padding: 15px 0;
+      image {
+        width: 100% !important;
+      }
     }
   }
 }

@@ -188,6 +188,7 @@ export default {
     }
     .content {
       padding: 15px 0;
+      width: 100% !important;
     }
   }
   .newstj {
