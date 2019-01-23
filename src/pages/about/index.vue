@@ -133,6 +133,7 @@ export default {
             this.teams = dt.teams;
             this.certstitle = dt.certstitle;
             this.certs = dt.certs;
+            this.show = true;
           }
           this.show = true;
           uni.setNavigationBarTitle({
