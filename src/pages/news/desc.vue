@@ -39,7 +39,10 @@
     </div>
 
     <!-- newstj -->
-    <div class="newstj" v-if="show">
+    <div
+      class="newstj"
+      v-if="show"
+    >
       <div class="title">
         推荐新闻
       </div>
@@ -100,12 +103,24 @@ export default {
   },
   methods: {
     changeActon(e) {
+      let pages = getCurrentPages();
+      let nowRoute = pages[pages.length - 2].route;
       let id = e.currentTarget.dataset.id;
       this.action = id;
-      this.$ee.fire("gotoindex",{action:id});
-      uni.navigateBack({
-        delta: 1
-      });
+      console.log(nowRoute);
+      if (nowRoute == "pages/index/index") {
+        this.$ee.fire("gotoindex", {
+          url: `/pages/news/index?action=${id}`
+        });
+        uni.navigateBack({
+          delta: 999
+        });
+      } else {
+        this.$ee.fire("gotoindex", { action: id });
+        uni.navigateBack({
+          delta: 1
+        });
+      }
     },
     changeId(e) {
       let id = e.currentTarget.dataset.id;

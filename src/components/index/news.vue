@@ -4,8 +4,18 @@
       <view class="dot"></view>
       {{news.titlexwzx}}
     </view>
-    <view v-if="show" class="uni-flex uni-row news" style="flex-wrap: wrap;">
-      <view v-for="(item,index) in news.news" :key="index" class="item">
+    <view
+      v-if="show"
+      class="uni-flex uni-row news"
+      style="flex-wrap: wrap;"
+    >
+      <view
+        v-for="(item,index) in news.news"
+        :key="index"
+        class="item"
+        :data-id="item.id"
+        @click="gotoNewDesc"
+      >
         <view class="bg uni-flex uni-row">
           <view class="left">
             <view class="month">{{item.month}}</view>
@@ -33,13 +43,22 @@ export default {
   },
   data() {
     return {
-      show:false
+      show: false
     };
   },
   mounted() {},
   updated() {
     if (this.news) {
       this.show = true;
+    }
+  },
+  methods: {
+    gotoNewDesc(e) {
+      let id = e.currentTarget.dataset.id;
+      // console.log(id);
+      uni.navigateTo({
+        url: `/pages/news/desc?id=${id}`
+      });
     }
   }
 };

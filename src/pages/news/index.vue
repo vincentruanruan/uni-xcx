@@ -97,7 +97,10 @@ export default {
       prev: ""
     };
   },
-  mounted() {
+  onLoad(option) {
+    if(option.action){
+      this.action=option.action
+    }
     this.getData();
     this.$ee.on("descback", res => {
       this.action = res.action;
