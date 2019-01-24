@@ -1,29 +1,11 @@
 <template>
   <view class="index">
-
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      :drop="drop"
+    <loading v-if="show==2" />
+    <cutting
+      :rs="restart"
+      v-if="show==1"
     />
 
-    <!-- 轮播 -->
-    <banner :carouse="carouse" />
-
-    <!-- 服务 -->
-    <server :list="list" />
-
-    <!-- 案例 -->
-    <cases :cases="cases" />
-
-    <!-- 开发 -->
-    <develop :develop="developments" />
-
-    <!-- 新闻 -->
-    <news :news="news" />
-
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
   </view>
 </template>
 
@@ -31,13 +13,12 @@
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 import cutting from "../../components/cutting";
+import loading from "../../components/loading";
 import banner from "../../components/index/banner";
 import server from "../../components/index/server";
 import develop from "../../components/index/develop";
 import news from "../../components/index/news";
 import cases from "../../components/index/cases";
-
-
 
 export default {
   data() {
@@ -45,6 +26,7 @@ export default {
       // 页面需要的参数
       drop: false,
       gotoUrl: "",
+      show: 0,
       // 下面是接口参数
       header: {},
       footer: {},
@@ -57,6 +39,7 @@ export default {
     };
   },
   components: {
+    loading,
     cutting,
     headerbox,
     footerbox,
@@ -92,11 +75,17 @@ export default {
     obj.scrollTop > 30 ? (this.drop = true) : (this.drop = false);
   },
   methods: {
+    restart() {
+      this.show = 0;
+      setTimeout(() => {
+        this.getData();
+      }, 1500);
+    },
     getData() {
       uni.request({
         url:
           this.$store.state.baseUrl +
-          "/web/index.php?c=account&a=welcome&do=indexapi",
+          "/web/index.php?c=account&a=welcome&do=indexapi1",
         data: {},
         method: "POST",
         success: res => {
@@ -112,10 +101,16 @@ export default {
             this.developments = dt.developments;
             this.list = dt.list;
             this.news = dt.news;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+          } else {
+            this.show = 2;
           }
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }
