@@ -48,54 +48,34 @@
       </div>
     </div>
 
-    <!-- 列表 -->
-    <div class="lists">
-      <div class="bg">
-        <div
-          class="item"
-          v-for="(item,index) in lists"
-          :key="index"
-        >
-          <div class="bg">
-            <image
-              class="icon"
-              :src="item.image"
-              :mode="mode"
-            ></image>
-            <div class="right">
-              <div class="title">{{item.title}}</div>
-              <div class="desc">{{item.abstract}}</div>
-            </div>
-            <div class="time">{{item.addtime}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="page-box">
 
       <button
         type="default"
         class="left"
-        v-if="prev.length>0"
-      >上一篇：</button>
+        v-if="prev.id"
+        :data-id="prev.id"
+        @click="changePage"
+      >上一篇：{{prev.title}}</button>
       <button
         type="default"
         class="left"
         disabled="true"
-        v-if="prev.length<=0"
+        v-if="!prev.id"
       >上一篇：没有了</button>
 
       <button
         type="default"
         class="right"
-        v-if="next.length>0"
-      >下一篇：</button>
+        v-if="next.id"
+        :data-id="next.id"
+        @click="changePage"
+      >下一篇：{{next.title}}</button>
       <button
         type="default"
         class="right"
         disabled="true"
-        v-if="next.length<=0"
+        v-if="!next.id"
       >下一篇：没有了</button>
     </div>
 
@@ -116,7 +96,7 @@ export default {
       mode: "widthFix",
       show: false,
       action: 0,
-
+      id: 0,
       keyword: "",
       // 下面是接口参数
       header: {},
@@ -132,7 +112,7 @@ export default {
   },
   onLoad(option) {
     this.id = option.id;
-    this.id = 1;
+    // this.id = 1;
     this.getData();
   },
   components: {
@@ -141,6 +121,11 @@ export default {
     wxParse
   },
   methods: {
+    changePage(e) {
+      let id = e.currentTarget.dataset.id;
+      this.id = id;
+      this.getData();
+    },
     keywordChage(e) {
       // console.log(e.detail.value);
       this.keyword = e.detail.value;
@@ -267,6 +252,32 @@ export default {
         width: 100% !important;
       }
     }
+  }
+  .page-box {
+    overflow: hidden;
+    text-align: center;
+    padding: 20px 0;
+    button {
+      text-overflow: -o-ellipsis-lastline;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      line-height: 34px;
+      height: 34px;
+      padding: 0 20px;
+      width: 140px;
+      font-size: 11px;
+      display: inline-block;
+      margin: 0 10px;
+    }
+    // .left {
+    //   float: left;
+    // }
+    // .right {
+    //   float: right;
+    // }
   }
 }
 </style>
