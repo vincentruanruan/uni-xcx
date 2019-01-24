@@ -4,7 +4,9 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         baseUrl: 'http://hidsy.maimaitoo.com',
-        header: { "content-type": "application/x-www-form-urlencoded" },
+        header: {
+            "content-type": "application/x-www-form-urlencoded"
+        },
         method: "POST",
     },
     mutations: {
@@ -58,6 +60,9 @@ const store = new Vuex.Store({
                     url
                 });
             } else { // 不是首页 跳转去其他页面
+                Vue.prototype.$ee.fire("gotoindex", {
+                    url: url
+                });
                 uni.navigateBack({
                     delta: 999
                 });

@@ -63,10 +63,22 @@ export default {
     cases
   },
   onShow() {
-    console.log('gotoUrl: '+this.gotoUrl)
+    if (this.gotoUrl) {
+      console.log("gotoUrl: " + this.gotoUrl);
+      let url = this.gotoUrl;
+      this.gotoUrl = "";
+      uni.navigateTo({
+        url: url
+      });
+    }
   },
   onLoad() {
     this.getData();
+    this.$ee.on("gotoindex", res => {
+      // console.log("gotoindex");
+      // console.log(res);
+      this.gotoUrl = res.url;
+    });
   },
   mounted() {
     // console.log(this.$store.state.baseUrl);

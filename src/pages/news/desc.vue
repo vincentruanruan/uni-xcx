@@ -102,7 +102,7 @@ export default {
     changeActon(e) {
       let id = e.currentTarget.dataset.id;
       this.action = id;
-      this.$ee.fire("descback",{action:id});
+      this.$ee.fire("gotoindex",{action:id});
       uni.navigateBack({
         delta: 1
       });
