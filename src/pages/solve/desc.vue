@@ -1,82 +1,91 @@
 <template>
   <div class="solve">
 
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      drop="false"
-      hasPadding="true"
-    />
-
-    <!-- banner -->
-    <div class="banner">
-      <image
-        class="bg"
-        :src="banner.solve"
-        :mode="mode"
-        lazy-load
-      ></image>
-      <div class="title">{{banner.solvetitle}}</div>
-    </div>
-
-    <!-- 按钮组 -->
-    <div class="btn-group">
-      <div
-        :class="action == item.id?'item action':'item'"
-        v-for="(item,index) in categorys"
-        :key="index"
-        :data-id="item.id"
-        @click="changeActon"
-      >
-        {{item.categoryname}}
-      </div>
-    </div>
-
-    <!-- 内容 -->
-    <div class="info">
-      <div class="header">{{info.title}}</div>
-      <div class="time">{{info.addtime}}
-        <div class="num">
-          <uni-icon
-            class="navBtn"
-            type="eye"
-            size="15"
-          ></uni-icon>{{info.count}}
-        </div>
-      </div>
-
-      <div class="content">
-        <wxParse :content="info.content" />
-      </div>
-    </div>
-
-    <!-- 列表 -->
-    <div
-      v-if="show"
-      class="uni-flex uni-row list"
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
     >
-      <div class="header">相关案例</div>
-      <div
-        v-for="(item,index) in referrals"
-        :key="index"
-        class="item"
-      >
-        <div class="bg">
+      <load v-if="show==0" />
+      <div v-if="show==1">
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          drop="false"
+          hasPadding="true"
+        />
 
+        <!-- banner -->
+        <div class="banner">
           <image
-            class="itemIcon"
+            class="bg"
+            :src="banner.solve"
             :mode="mode"
-            :src="item.image"
             lazy-load
           ></image>
-          <div class="itemTitle">{{item.title}}</div>
-
+          <div class="title">{{banner.solvetitle}}</div>
         </div>
-      </div>
-    </div>
 
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
+        <!-- 按钮组 -->
+        <div class="btn-group">
+          <div
+            :class="action == item.id?'item action':'item'"
+            v-for="(item,index) in categorys"
+            :key="index"
+            :data-id="item.id"
+            @click="changeActon"
+          >
+            {{item.categoryname}}
+          </div>
+        </div>
+
+        <!-- 内容 -->
+        <div class="info">
+          <div class="header">{{info.title}}</div>
+          <div class="time">{{info.addtime}}
+            <div class="num">
+              <uni-icon
+                class="navBtn"
+                type="eye"
+                size="15"
+              ></uni-icon>{{info.count}}
+            </div>
+          </div>
+
+          <div class="content">
+            <wxParse :content="info.content" />
+          </div>
+        </div>
+
+        <!-- 列表 -->
+        <div class="uni-flex uni-row list">
+          <div class="header">相关案例</div>
+          <div
+            v-for="(item,index) in referrals"
+            :key="index"
+            class="item"
+          >
+            <div class="bg">
+
+              <image
+                class="itemIcon"
+                :mode="mode"
+                :src="item.image"
+                lazy-load
+              ></image>
+              <div class="itemTitle">{{item.title}}</div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部 -->
+        <footerbox :footer="footer" />
+      </div>
+      <cutting
+        :rs="getData"
+        v-if="show==2"
+      />
+    </transition>
 
   </div>
 </template>
@@ -91,7 +100,7 @@ export default {
     return {
       // 页面需要的参数
       mode: "widthFix",
-      show: false,
+      show: 0,
       action: 0,
       id: 0,
       // 下面是接口参数
@@ -106,7 +115,8 @@ export default {
   },
   onLoad(option) {
     this.id = option.id;
-    // this.id = 6;
+  },
+  mounted() {
     this.getData();
   },
   components: {
@@ -124,6 +134,7 @@ export default {
       });
     },
     getData() {
+      // this.show = 0;
       // console.log("cid " + this.action);
       // console.log("nowPage " + this.nowPage);
       uni.request({
@@ -147,15 +158,21 @@ export default {
             this.categorys = dt.categorys;
             this.referrals = dt.referrals;
             this.info = dt.info;
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+            uni.pageScrollTo({
+              scrollTop: 0,
+              duration: 300
+            });
+          } else {
+            this.show = 2;
           }
-          this.show = true;
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
-          uni.pageScrollTo({
-            scrollTop: 0,
-            duration: 300
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }

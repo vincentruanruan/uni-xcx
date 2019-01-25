@@ -11,7 +11,7 @@
         lazy-load
       ></image>
       <div class="tip">
-        网络似乎断开链接，点击刷新
+        网络似乎断开链接<br />点击刷新
       </div>
     </div>
   </div>
@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       mode: "widthFix",
-      cuttingImage: "../../static/cutting.png"
+      cuttingImage: "/static/cutting.png"
     };
   },
   methods: {
@@ -49,10 +49,10 @@ export default {
   .item {
     display: inline-block;
     margin: 0 auto;
-    margin-top: 30%;
+    margin-top: 50%;
     vertical-align: middle;
     .cuttingImage {
-      width: 120px;
+      width: 60px;
       display: inline-block;
     }
     .tip {

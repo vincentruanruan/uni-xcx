@@ -1,84 +1,98 @@
 <template>
   <div class="help">
 
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      drop="false"
-      hasPadding="true"
-    />
-
-    <!-- banner -->
-    <div class="banner">
-      <image
-        class="bg"
-        :src="banner.help"
-        :mode="mode"
-      ></image>
-      <div class="title">{{title}}</div>
-      <view class='inputGroup'>
-        <input
-          class='keyword'
-          placeholder="请输入你要查询的内容"
-          :value="keyword"
-          @input="keywordChage"
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
+    >
+      <load v-if="show==0" />
+      <div v-if="show==1">
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          drop="false"
+          hasPadding="true"
         />
-      </view>
-    </div>
 
-    <!-- 按钮组 -->
-    <div class="btn-group">
-      <div
-        :class="action == item.id?'item action':'item'"
-        v-for="(item,index) in categorys"
-        :key="index"
-        :data-id="item.id"
-        @click="changeActon"
-      >
-        {{item.categoryname}}
-      </div>
-    </div>
+        <!-- banner -->
+        <div class="banner">
+          <image
+            class="bg"
+            :src="banner.help"
+            :mode="mode"
+          ></image>
+          <div class="title">{{title}}</div>
+          <view class='inputGroup'>
+            <input
+              class='keyword'
+              placeholder="请输入你要查询的内容"
+              :value="keyword"
+              @input="keywordChage"
+            />
+          </view>
+        </div>
 
-    <!-- 列表 -->
-    <div class="lists">
-      <div class="bg">
-        <div
-          class="item"
-          v-for="(item,index) in lists"
-          :key="index"
-          :data-id="item.id"
-          @click="gotoDesc"
-        >
-          <div class="bg">
-            <image
-              class="icon"
-              :src="item.image"
-              :mode="mode"
-            ></image>
-            <div class="right">
-              <div class="title">{{item.title}}</div>
-              <div class="desc">{{item.abstract}}</div>
-            </div>
-            <div class="time">{{item.addtime}}</div>
+        <!-- 按钮组 -->
+        <div class="btn-group">
+          <div
+            :class="action == item.id?'item action':'item'"
+            v-for="(item,index) in categorys"
+            :key="index"
+            :data-id="item.id"
+            @click="changeActon"
+          >
+            {{item.categoryname}}
           </div>
         </div>
+
+        <!-- 列表 -->
+        <div class="lists">
+          <div class="bg">
+            <div
+              class="item"
+              v-for="(item,index) in lists"
+              :key="index"
+              :data-id="item.id"
+              @click="gotoDesc"
+            >
+              <div class="bg">
+                <image
+                  class="icon"
+                  :src="item.image"
+                  :mode="mode"
+                ></image>
+                <div class="right">
+                  <div class="title">{{item.title}}</div>
+                  <div class="desc">{{item.abstract}}</div>
+                </div>
+                <div class="time">{{item.addtime}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 分页 -->
+        <pagebox
+          :change="pageChange"
+          :current="nowPage"
+          :total="allpage"
+        ></pagebox>
+
+        <!-- 底部 -->
+        <footerbox :footer="footer" />
       </div>
-    </div>
-
-    <!-- 分页 -->
-    <pagebox
-      :change="pageChange"
-      :current="nowPage"
-      :total="allpage"
-    ></pagebox>
-
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
+      <cutting
+        :rs="getData"
+        v-if="show==2"
+      />
+    </transition>
 
   </div>
 </template>
 
 <script>
+import cutting from "../../components/cutting";
+import load from "../../components/load";
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 import pagebox from "../../components/pagebox";
@@ -88,7 +102,7 @@ export default {
     return {
       // 页面需要的参数
       mode: "widthFix",
-      show: false,
+      show: 0,
       action: 0,
       allpage: "1",
       nowpage: "1",
@@ -110,7 +124,7 @@ export default {
       this.getData();
     });
     this.$ee.on("kwback", res => {
-        console.log(res)
+      console.log(res);
       this.keyword = res.keyword;
       this.action = 0;
       console.log("kwback");
@@ -118,6 +132,8 @@ export default {
     });
   },
   components: {
+    load,
+    cutting,
     headerbox,
     footerbox,
     pagebox
@@ -171,15 +187,21 @@ export default {
             this.categorys = dt.categorys;
             this.lists = dt.lists;
             this.allpage = dt.allpage;
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+            uni.pageScrollTo({
+              scrollTop: 0,
+              duration: 300
+            });
+          } else {
+            this.show = 2;
           }
-          this.show = true;
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
-          uni.pageScrollTo({
-            scrollTop: 0,
-            duration: 300
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }

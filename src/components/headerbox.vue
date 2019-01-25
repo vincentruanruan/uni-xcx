@@ -5,10 +5,7 @@
         class="paddingBox"
         v-if="hasPadding"
       ></view>
-      <view
-        :class="drop?'floatNav drop':'floatNav'"
-        v-if="show"
-      >
+      <view :class="drop?'floatNav drop':'floatNav'">
         <image
           v-if="drop"
           class="logo"
@@ -71,7 +68,6 @@ export default {
   },
   data() {
     return {
-      show: false,
       mode: "aspectFit",
       navColor1: "#999",
       navColor2: "#fff",
@@ -82,11 +78,6 @@ export default {
   components: {
     uniIcon,
     uniDrawer
-  },
-  updated() {
-    if (this.header) {
-      this.show = true;
-    }
   },
   methods: {
     menuClick(e) {

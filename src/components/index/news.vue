@@ -5,7 +5,6 @@
       {{news.titlexwzx}}
     </view>
     <view
-      v-if="show"
       class="uni-flex uni-row news"
       style="flex-wrap: wrap;"
     >
@@ -42,16 +41,9 @@ export default {
     news: Object
   },
   data() {
-    return {
-      show: false
-    };
+    return {};
   },
   mounted() {},
-  updated() {
-    if (this.news) {
-      this.show = true;
-    }
-  },
   methods: {
     gotoNewDesc(e) {
       let id = e.currentTarget.dataset.id;

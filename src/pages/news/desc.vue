@@ -1,74 +1,86 @@
 <template>
   <div class="desc">
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      drop="false"
-      hasPadding="true"
-    />
 
-    <!-- banner -->
-    <div class="banner">
-      <image
-        class="bg"
-        :src="banner.news"
-        :mode="mode"
-      ></image>
-    </div>
-
-    <!-- 按钮组 -->
-    <div class="btn-group">
-      <div
-        :class="action == item.id?'item action':'item'"
-        v-for="(item,index) in categorts"
-        :key="index"
-        :data-id="item.id"
-        @click="changeActon"
-      >
-        {{item.categoryname}}
-      </div>
-    </div>
-
-    <!-- info -->
-    <div class="info">
-      <div class="title">{{info.title}}</div>
-      <div class="addtime">{{info.addtime}}</div>
-      <div class="content">
-        <wxParse :content="info.content" />
-      </div>
-    </div>
-
-    <!-- newstj -->
-    <div
-      class="newstj"
-      v-if="show"
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
     >
-      <div class="title">
-        推荐新闻
-      </div>
-      <div class="list">
-        <div
-          class="item"
-          v-for="(item,index) in newstj"
-          :key="index"
-          :data-id="item.id"
-        >
-          <div class="dot">·</div>
-          <text
-            @click="changeId"
-            :data-id="item.id"
-          >{{item.title}}</text>
-        </div>
-      </div>
-    </div>
+      <load v-if="show==0" />
+      <div v-if="show==1">
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          drop="false"
+          hasPadding="true"
+        />
 
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
+        <!-- banner -->
+        <div class="banner">
+          <image
+            class="bg"
+            :src="banner.news"
+            :mode="mode"
+          ></image>
+        </div>
+
+        <!-- 按钮组 -->
+        <div class="btn-group">
+          <div
+            :class="action == item.id?'item action':'item'"
+            v-for="(item,index) in categorts"
+            :key="index"
+            :data-id="item.id"
+            @click="changeActon"
+          >
+            {{item.categoryname}}
+          </div>
+        </div>
+
+        <!-- info -->
+        <div class="info">
+          <div class="title">{{info.title}}</div>
+          <div class="addtime">{{info.addtime}}</div>
+          <div class="content">
+            <wxParse :content="info.content" />
+          </div>
+        </div>
+
+        <!-- newstj -->
+        <div class="newstj">
+          <div class="title">
+            推荐新闻
+          </div>
+          <div class="list">
+            <div
+              class="item"
+              v-for="(item,index) in newstj"
+              :key="index"
+              :data-id="item.id"
+            >
+              <div class="dot">·</div>
+              <text
+                @click="changeId"
+                :data-id="item.id"
+              >{{item.title}}</text>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部 -->
+        <footerbox :footer="footer" />
+      </div>
+      <cutting
+        :rs="getData"
+        v-if="show==2"
+      />
+    </transition>
 
   </div>
 </template>
     
 <script>
+import cutting from "../../components/cutting";
+import load from "../../components/load";
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 import wxParse from "mpvue-wxparse";
@@ -78,7 +90,7 @@ export default {
     return {
       // 页面需要的参数
       mode: "widthFix",
-      show: false,
+      show: 0,
       id: 0,
       action: 0,
       // 下面是接口参数
@@ -97,6 +109,8 @@ export default {
     this.getData();
   },
   components: {
+    load,
+    cutting,
     headerbox,
     footerbox,
     wxParse
@@ -150,15 +164,21 @@ export default {
             this.categorts = dt.categorts;
             this.info = dt.info;
             this.newstj = dt.newstj;
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+            uni.pageScrollTo({
+              scrollTop: 0,
+              duration: 300
+            });
+          } else {
+            this.show = 2;
           }
-          this.show = true;
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
-          uni.pageScrollTo({
-            scrollTop: 0,
-            duration: 300
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }

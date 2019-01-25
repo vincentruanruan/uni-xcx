@@ -7,7 +7,6 @@
     <view
       class="uni-flex uni-row list"
       style="flex-wrap: wrap;"
-      v-if="show"
     >
       <view
         v-for="(item,index) in list.server"
@@ -19,7 +18,6 @@
             class="itemIcon"
             :mode="mode"
             :src="item.image"
-            lazy-load
           ></image>
           <view class="itemTitle">{{item.title}}</view>
           <view class="itemDesc">{{item.miaoshu}}</view>
@@ -33,21 +31,13 @@
 <script>
 export default {
   props: {
-    list: Object,
+    list: Object
   },
   data() {
     return {
-      show:false,
       mode: "widthFix"
     };
-  },
-  updated() {
-    if(this.list){
-      this.show=true
-    }
-  },
-
-
+  }
 };
 </script>
 

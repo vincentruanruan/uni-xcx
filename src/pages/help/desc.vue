@@ -1,91 +1,105 @@
 <template>
   <div class="help">
 
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      drop="false"
-      hasPadding="true"
-    />
-
-    <!-- banner -->
-    <div class="banner">
-      <image
-        class="bg"
-        :src="banner.help"
-        :mode="mode"
-      ></image>
-      <div class="title">{{banner.helptitle}}</div>
-      <view class='inputGroup'>
-        <input
-          class='keyword'
-          placeholder="请输入你要查询的内容"
-          :value="keyword"
-          @confirm="keywordChage"
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
+    >
+      <load v-if="show==0" />
+      <div v-if="show==1">
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          drop="false"
+          hasPadding="true"
         />
-      </view>
-    </div>
 
-    <!-- 按钮组 -->
-    <div class="btn-group">
-      <div
-        :class="action == item.id?'item action':'item'"
-        v-for="(item,index) in categorys"
-        :key="index"
-        :data-id="item.id"
-        @click="changeActon"
-      >
-        {{item.categoryname}}
+        <!-- banner -->
+        <div class="banner">
+          <image
+            class="bg"
+            :src="banner.help"
+            :mode="mode"
+          ></image>
+          <div class="title">{{banner.helptitle}}</div>
+          <view class='inputGroup'>
+            <input
+              class='keyword'
+              placeholder="请输入你要查询的内容"
+              :value="keyword"
+              @confirm="keywordChage"
+            />
+          </view>
+        </div>
+
+        <!-- 按钮组 -->
+        <div class="btn-group">
+          <div
+            :class="action == item.id?'item action':'item'"
+            v-for="(item,index) in categorys"
+            :key="index"
+            :data-id="item.id"
+            @click="changeActon"
+          >
+            {{item.categoryname}}
+          </div>
+        </div>
+
+        <!-- info -->
+        <div class="info">
+          <div class="title">{{info.title}}</div>
+          <div class="addtime">{{info.addtime}}</div>
+          <div class="content">
+            <wxParse :content="info.content" />
+          </div>
+        </div>
+
+        <div class="page-box">
+
+          <button
+            type="default"
+            class="left"
+            v-if="prev.id"
+            :data-id="prev.id"
+            @click="changePage"
+          >上一篇：{{prev.title}}</button>
+          <button
+            type="default"
+            class="left"
+            disabled="true"
+            v-if="!prev.id"
+          >上一篇：没有了</button>
+
+          <button
+            type="default"
+            class="right"
+            v-if="next.id"
+            :data-id="next.id"
+            @click="changePage"
+          >下一篇：{{next.title}}</button>
+          <button
+            type="default"
+            class="right"
+            disabled="true"
+            v-if="!next.id"
+          >下一篇：没有了</button>
+        </div>
+
+        <!-- 底部 -->
+        <footerbox :footer="footer" />
       </div>
-    </div>
-
-    <!-- info -->
-    <div class="info">
-      <div class="title">{{info.title}}</div>
-      <div class="addtime">{{info.addtime}}</div>
-      <div class="content">
-        <wxParse :content="info.content" />
-      </div>
-    </div>
-
-    <div class="page-box">
-
-      <button
-        type="default"
-        class="left"
-        v-if="prev.id"
-        :data-id="prev.id"
-        @click="changePage"
-      >上一篇：{{prev.title}}</button>
-      <button
-        type="default"
-        class="left"
-        disabled="true"
-        v-if="!prev.id"
-      >上一篇：没有了</button>
-
-      <button
-        type="default"
-        class="right"
-        v-if="next.id"
-        :data-id="next.id"
-        @click="changePage"
-      >下一篇：{{next.title}}</button>
-      <button
-        type="default"
-        class="right"
-        disabled="true"
-        v-if="!next.id"
-      >下一篇：没有了</button>
-    </div>
-
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
+      <cutting
+        :rs="getData"
+        v-if="show==2"
+      />
+    </transition>
 
   </div>
 </template>
 
 <script>
+import cutting from "../../components/cutting";
+import load from "../../components/load";
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 import wxParse from "mpvue-wxparse";
@@ -94,7 +108,7 @@ export default {
     return {
       // 页面需要的参数
       mode: "widthFix",
-      show: false,
+      show: 0,
       action: 0,
       id: 0,
       keyword: "",
@@ -116,6 +130,8 @@ export default {
     this.getData();
   },
   components: {
+    load,
+    cutting,
     headerbox,
     footerbox,
     wxParse
@@ -168,15 +184,21 @@ export default {
             this.info = dt.info;
             this.prev = dt.prev;
             this.next = dt.next;
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+            uni.pageScrollTo({
+              scrollTop: 0,
+              duration: 300
+            });
+          } else {
+            this.show = 2;
           }
-          this.show = true;
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
-          uni.pageScrollTo({
-            scrollTop: 0,
-            duration: 300
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }

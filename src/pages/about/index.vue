@@ -1,90 +1,100 @@
 <template>
   <view class="about">
-    <div>
 
-      <!-- 头部 -->
-      <headerbox
-        :header="header"
-        drop="false"
-        hasPadding="true"
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
+    >
+      <load v-if="show==0" />
+      <div v-if="show==1">
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          drop="false"
+          hasPadding="true"
+        />
+
+        <!-- banner -->
+        <div class="banner">
+          <image
+            class="bg"
+            :src="banner.about"
+            :mode="mode"
+          ></image>
+        </div>
+
+        <!-- 简介 -->
+        <div class="desc">{{banner.contend}}</div>
+
+        <!-- 内容 团队 -->
+        <div class="about-group teams">
+          <div class="title-cn">{{teamstitle.title}}</div>
+          <div class="title-en">{{teamstitle.subhead}}</div>
+          <view
+            class="uni-flex uni-row list"
+            style="flex-wrap: wrap;"
+          >
+            <view
+              v-for="(item,index) in teams"
+              :key="index"
+              class="item"
+            >
+              <view class="bg">
+                <image
+                  class="itemIcon"
+                  :mode="mode"
+                  :src="item.image"
+                  lazy-load
+                ></image>
+                <view class="itemTitle">{{item.name}}</view>
+                <view class="itemDesc">{{item.zhiwei}}</view>
+              </view>
+            </view>
+          </view>
+        </div>
+
+        <!-- 内容 证书 -->
+        <div class="about-group carts">
+          <div class="title-cn">{{teamstitle.title}}</div>
+          <div class="title-en">{{teamstitle.subhead}}</div>
+          <view
+            class="uni-flex uni-row list"
+            style="flex-wrap: wrap;"
+          >
+            <view
+              v-for="(item,index) in teams"
+              :key="index"
+              class="item"
+            >
+              <view class="bg">
+                <image
+                  class="itemIcon"
+                  :mode="mode"
+                  :src="item.image"
+                  lazy-load
+                ></image>
+                <view class="itemTitle">{{item.name}}</view>
+                <view class="itemDesc">{{item.zhiwei}}</view>
+              </view>
+            </view>
+          </view>
+        </div>
+
+        <!-- 底部 -->
+        <footerbox :footer="footer" />
+      </div>
+      <cutting
+        :rs="getData"
+        v-if="show==2"
       />
+    </transition>
 
-      <!-- banner -->
-      <div class="banner">
-        <image
-          class="bg"
-          :src="banner.about"
-          :mode="mode"
-        ></image>
-      </div>
-
-      <!-- 简介 -->
-      <div class="desc">{{banner.contend}}</div>
-
-      <!-- 内容 团队 -->
-      <div class="about-group teams">
-        <div class="title-cn">{{teamstitle.title}}</div>
-        <div class="title-en">{{teamstitle.subhead}}</div>
-        <view
-          class="uni-flex uni-row list"
-          style="flex-wrap: wrap;"
-          v-if="show"
-        >
-          <view
-            v-for="(item,index) in teams"
-            :key="index"
-            class="item"
-          >
-            <view class="bg">
-              <image
-                class="itemIcon"
-                :mode="mode"
-                :src="item.image"
-                lazy-load
-              ></image>
-              <view class="itemTitle">{{item.name}}</view>
-              <view class="itemDesc">{{item.zhiwei}}</view>
-            </view>
-          </view>
-        </view>
-      </div>
-
-      <!-- 内容 证书 -->
-      <div class="about-group carts">
-        <div class="title-cn">{{teamstitle.title}}</div>
-        <div class="title-en">{{teamstitle.subhead}}</div>
-        <view
-          class="uni-flex uni-row list"
-          style="flex-wrap: wrap;"
-          v-if="show"
-        >
-          <view
-            v-for="(item,index) in teams"
-            :key="index"
-            class="item"
-          >
-            <view class="bg">
-              <image
-                class="itemIcon"
-                :mode="mode"
-                :src="item.image"
-                lazy-load
-              ></image>
-              <view class="itemTitle">{{item.name}}</view>
-              <view class="itemDesc">{{item.zhiwei}}</view>
-            </view>
-          </view>
-        </view>
-      </div>
-
-      <!-- 底部 -->
-      <footerbox :footer="footer" />
-
-    </div>
   </view>
 </template>
 
 <script>
+import cutting from "../../components/cutting";
+import load from "../../components/load";
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 export default {
@@ -92,7 +102,7 @@ export default {
     return {
       // 页面需要的参数
       mode: "widthFix",
-      show: false,
+      show: 0,
       // 下面是接口参数
       header: {},
       footer: {},
@@ -108,11 +118,14 @@ export default {
     this.getData();
   },
   components: {
+    load,
+    cutting,
     headerbox,
     footerbox
   },
   methods: {
     getData() {
+      this.show = 0;
       uni.request({
         url:
           this.$store.state.baseUrl +
@@ -133,12 +146,17 @@ export default {
             this.teams = dt.teams;
             this.certstitle = dt.certstitle;
             this.certs = dt.certs;
-            this.show = true;
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+          } else {
+            this.show = 2;
           }
-          this.show = true;
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }

@@ -1,81 +1,98 @@
 <template>
   <div class="daili">
 
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      drop="false"
-      hasPadding="true"
-    />
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
+    >
+      <load v-if="show==0" />
+      <div v-if="show==1">
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          drop="false"
+          hasPadding="true"
+        />
 
-    <!-- banner -->
-    <div class="banner">
-      <image
-        class="bg"
-        :src="banner.daili"
-        :mode="mode"
-      ></image>
-      <div class="title">{{title}}</div>
-    </div>
+        <!-- banner -->
+        <div class="banner">
+          <image
+            class="bg"
+            :src="banner.daili"
+            :mode="mode"
+          ></image>
+          <div class="title">{{title}}</div>
+        </div>
 
-    <div class="uni-row group market" v-if="show">
-      <div class="title-cn">{{market.title}}</div>
-      <div class="title-en">{{market.subhead}}</div>
-      <div class="desc">
-        <wxParse :content="market.content" />
-      </div>
-    </div>
+        <div class="uni-row group market">
+          <div class="title-cn">{{market.title}}</div>
+          <div class="title-en">{{market.subhead}}</div>
+          <div class="desc">
+            <wxParse :content="market.content" />
+          </div>
+        </div>
 
-    <div class="uni-row group gain">
-      <div class="title-cn">{{gain.title}}</div>
-      <div class="title-en">{{gain.subhead}}</div>
-      <div class="list">
-        <div class="bg">
-          <div
-            class="item"
-            v-for="(item,index) in gain.gain"
-            :key="index"
-          >
+        <div class="uni-row group gain">
+          <div class="title-cn">{{gain.title}}</div>
+          <div class="title-en">{{gain.subhead}}</div>
+          <div class="list">
             <div class="bg">
-              <image
-                class="icon"
-                :src="item.image"
-                :mode="mode"
-              ></image>
-              <div class="right">
-                <div class="title">{{item.title}}</div>
-                <div class="desc">{{item.content}}</div>
+              <div
+                class="item"
+                v-for="(item,index) in gain.gain"
+                :key="index"
+              >
+                <div class="bg">
+                  <image
+                    class="icon"
+                    :src="item.image"
+                    :mode="mode"
+                  ></image>
+                  <div class="right">
+                    <div class="title">{{item.title}}</div>
+                    <div class="desc">{{item.content}}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="uni-row group daili">
-      <div class="title-cn">{{daili.title}}</div>
-      <div class="title-en">{{daili.subhead}}</div>
-      <div class="list">
-        <div
-          class="item"
-          v-for="(item,index) in daili.condition"
-          :key="index"
-        >
-          <uni-badge
-            :text="index+1"
-            type="purple"
-          ></uni-badge>{{item.title}}
+        <div class="uni-row group daili">
+          <div class="title-cn">{{daili.title}}</div>
+          <div class="title-en">{{daili.subhead}}</div>
+          <div class="list">
+            <div
+              class="item"
+              v-for="(item,index) in daili.condition"
+              :key="index"
+            >
+              <uni-badge
+                :text="index+1"
+                type="purple"
+              ></uni-badge>{{item.title}}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
+        <!-- 底部 -->
+        <footerbox
+          :footer="footer"
+        />
+
+      </div>
+      <cutting
+        :rs="getData"
+        v-if="show==2"
+      />
+    </transition>
 
   </div>
 </template>
 
 <script>
+import cutting from "../../components/cutting";
+import load from "../../components/load";
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 import wxParse from "mpvue-wxparse";
@@ -85,7 +102,7 @@ export default {
     return {
       // 页面需要的参数
       mode: "widthFix",
-      show: false,
+      show: 0,
       action: 0,
       // 下面是接口参数
       header: {},
@@ -101,6 +118,8 @@ export default {
     this.getData();
   },
   components: {
+    load,
+    cutting,
     headerbox,
     footerbox,
     wxParse,
@@ -108,6 +127,7 @@ export default {
   },
   methods: {
     getData() {
+      this.show = 0;
       uni.request({
         url:
           this.$store.state.baseUrl +
@@ -127,11 +147,17 @@ export default {
             this.market = dt.market;
             this.gain = dt.gain;
             this.daili = dt.daili;
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+          } else {
+            this.show = 2;
           }
-          this.show = true;
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }
@@ -173,7 +199,7 @@ export default {
     }
   }
   .market {
-      padding-bottom: 40px;
+    padding-bottom: 40px;
     .desc {
       padding: 15px 20px;
       text-align: center;

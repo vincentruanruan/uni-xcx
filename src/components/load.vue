@@ -1,15 +1,18 @@
 <template>
   <div class="loading">
-    <div class="item">
+    <div
+      class="item"
+      @click="restartFun"
+    >
       <image
-        class="loadingImage"
+        class="cuttingImage"
         :mode="mode"
-        :src="loadingImage"
+        :src="cuttingImage"
         lazy-load
       ></image>
-      <!-- <div class="tip">
-        加载中
-      </div> -->
+      <div class="tip">
+        加载中...
+      </div>
     </div>
   </div>
 
@@ -18,21 +21,32 @@
 
 <script>
 export default {
-  props: {},
+  props: {
+    rs: Object
+  },
   data() {
     return {
       mode: "widthFix",
-      loadingImage: "../../static/cutting.png"
+      cuttingImage: "/static/loading.png"
     };
   },
+  mounted() {},
   methods: {}
 };
 </script>
 
 
 <style lang="scss">
+@keyframes rotating {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .loading {
-  background: #f0f0f0;
+  background: #fff;
   height: 100%;
   width: 100%;
   position: absolute;
@@ -40,14 +54,15 @@ export default {
   .item {
     display: inline-block;
     margin: 0 auto;
-    margin-top: 30%;
+    margin-top: 50%;
     vertical-align: middle;
-    .loadingImage {
-      width: 120px;
+    .cuttingImage {
+      width: 60px;
       display: inline-block;
+      animation: rotating 1.2s linear infinite;
     }
     .tip {
-      padding: 20px 15px;
+      padding: 0px 15px;
       font-size: 15px;
       color: #999;
     }

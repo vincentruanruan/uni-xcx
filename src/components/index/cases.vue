@@ -5,7 +5,9 @@
       {{cases.titleourservice}}
     </view>
 
-    <view v-if="show" class="btnList">
+    <view
+      class="btnList"
+    >
       <text
         v-for="(item,index) in cases.casemenu"
         :key="index"
@@ -15,10 +17,23 @@
       >{{item.categoryname}}</text>
     </view>
 
-    <view v-if="show" class="uni-flex uni-row cases" style="flex-wrap: wrap;">
-      <view v-for="(item,index) in cases.list[casesAction].cases" :key="index" class="item">
+    <view
+      
+      class="uni-flex uni-row cases"
+      style="flex-wrap: wrap;"
+    >
+      <view
+        v-for="(item,index) in cases.list[casesAction].cases"
+        :key="index"
+        class="item"
+      >
         <view class="bg">
-          <image class="itemIcon" :mode="mode" :src="item.image" lazy-load></image>
+          <image
+            class="itemIcon"
+            :mode="mode"
+            :src="item.image"
+            
+          ></image>
           <view class="itemTitle">{{item.title}}</view>
           <view class="itemDesc">{{item.miaoshu}}</view>
         </view>
@@ -35,7 +50,6 @@ export default {
   },
   data() {
     return {
-      show: false,
       casesAction: 0,
       mode: "widthFix"
     };
@@ -46,12 +60,6 @@ export default {
       // console.log(id);
       this.casesAction = id;
     }
-  },
-
-  updated() {
-    if (this.cases) {
-      this.show = true;
-    }
   }
 };
 </script>
@@ -59,7 +67,6 @@ export default {
 
 
 <style lang="scss" scoped>
-
 // 服务
 .index-group.server-group {
   padding: 7.5px;

@@ -13,10 +13,7 @@
 
     </view>
 
-    <view
-      class='info'
-      v-if="show"
-    >
+    <view class='info'>
       <view class='item'>
         <AtIcon
           class='icon'
@@ -47,10 +44,7 @@
       </view>
     </view>
 
-    <view
-      class='qrcode'
-      v-if="show"
-    >
+    <view class='qrcode'>
       <image
         class="icon"
         src='http://hidsy.maimaitoo.com/attachment/images/1/2018/12/FkZfff1CKzHr3C0577PKP79H5GFk0U.jpg'
@@ -72,14 +66,8 @@ export default {
   },
   data() {
     return {
-      show: false,
       mode: "widthFix"
     };
-  },
-  updated() {
-    if (this.footer) {
-      this.show = true;
-    }
   },
   methods: {
     navTo(e) {
@@ -111,7 +99,7 @@ export default {
 
   .info {
     text-align: center;
-
+    background: #363a43 !important;
     .item {
       display: inline-block;
       margin: 3px 5px;

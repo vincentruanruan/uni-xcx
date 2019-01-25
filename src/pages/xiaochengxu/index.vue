@@ -1,118 +1,131 @@
 <template>
   <div class="xiaochengxu">
 
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      drop="false"
-      hasPadding="true"
-    />
-
-    <!-- banner -->
-    <div class="banner">
-      <image
-        class="bg"
-        :src="banner.xiaochengxu"
-        :mode="mode"
-      ></image>
-      <div class="title">{{title}}</div>
-    </div>
-
-    <!-- 列表 xiaochengx -->
-    <div class="group group-xiaochengx uni-row">
-      <div class="title-cn title">{{xiaochengx.titlexcxrk}}</div>
-      <div class="title-en title">{{xiaochengx.titlexcxrken}}</div>
-      <div class="list">
-        <div
-          class="item"
-          v-for="(item,index) in xiaochengx.rukous"
-          :key="index"
-        >
-          <div class="bg">
-            <image
-              class="itemIcon"
-              :mode="'scaleToFill'"
-              :src="item.image"
-              lazy-load
-            ></image>
-            <div class="right">
-              <div class="itemTitle">{{item.title}}</div>
-              <div class="itemDesc">{{item.abstract}}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 列表 case -->
-    <div
-      class="group group-case"
-      v-if="show"
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
     >
-      <div class="title-cn">{{cases.titlebfanzs}}</div>
-      <div class="title-en">{{cases.titlebfanzsen}}</div>
-      <div class="btnList">
-        <div
-          :class="item.id==action?'btn action':'btn'"
-          v-for="(item,index) in cases.casemenu"
-          :key="index"
-          :data-id="item.id"
-          @click="changeAction"
-        >{{item.categoryname}}</div>
-      </div>
-      <div class="list">
-        <div
-          class="item"
-          v-for="(item,index) in cases.list[action].cases"
-          :key="index"
-        >
-          <div class="bg">
-            <image
-              class="itemIcon"
-              :mode="mode"
-              :src="item.image"
-              lazy-load
-            ></image>
-            <div class="right">
-              <div class="itemTitle">{{item.title}}</div>
+      <load v-if="show==0" />
+      <div v-if="show==1">
+
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          drop="false"
+          hasPadding="true"
+        />
+
+        <!-- banner -->
+        <div class="banner">
+          <image
+            class="bg"
+            :src="banner.xiaochengxu"
+            :mode="mode"
+          ></image>
+          <div class="title">{{title}}</div>
+        </div>
+
+        <!-- 列表 xiaochengx -->
+        <div class="group group-xiaochengx uni-row">
+          <div class="title-cn title">{{xiaochengx.titlexcxrk}}</div>
+          <div class="title-en title">{{xiaochengx.titlexcxrken}}</div>
+          <div class="list">
+            <div
+              class="item"
+              v-for="(item,index) in xiaochengx.rukous"
+              :key="index"
+            >
+              <div class="bg">
+                <image
+                  class="itemIcon"
+                  :mode="'scaleToFill'"
+                  :src="item.image"
+                  lazy-load
+                ></image>
+                <div class="right">
+                  <div class="itemTitle">{{item.title}}</div>
+                  <div class="itemDesc">{{item.abstract}}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- 列表 client -->
-    <div class="group group-client">
-      <div class="title-cn">{{client.titlesykh}}</div>
-      <div class="title-en">{{client.titlesykhen}}</div>
-      <div class="list">
-        <div
-          class="item"
-          v-for="(item,index) in client.client"
-          :key="index"
-        >
-          <div class="bg">
-            <image
-              class="itemIcon"
-              :mode="mode"
-              :src="item.image"
-              lazy-load
-            ></image>
-            <div class="right">
-              <div class="itemTitle">{{item.title}}</div>
+        <!-- 列表 case -->
+        <div class="group group-case">
+          <div class="title-cn">{{cases.titlebfanzs}}</div>
+          <div class="title-en">{{cases.titlebfanzsen}}</div>
+          <div class="btnList">
+            <div
+              :class="item.id==action?'btn action':'btn'"
+              v-for="(item,index) in cases.casemenu"
+              :key="index"
+              :data-id="item.id"
+              @click="changeAction"
+            >{{item.categoryname}}</div>
+          </div>
+          <div class="list">
+            <div
+              class="item"
+              v-for="(item,index) in cases.list[action].cases"
+              :key="index"
+            >
+              <div class="bg">
+                <image
+                  class="itemIcon"
+                  :mode="mode"
+                  :src="item.image"
+                  lazy-load
+                ></image>
+                <div class="right">
+                  <div class="itemTitle">{{item.title}}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
+        <!-- 列表 client -->
+        <div class="group group-client">
+          <div class="title-cn">{{client.titlesykh}}</div>
+          <div class="title-en">{{client.titlesykhen}}</div>
+          <div class="list">
+            <div
+              class="item"
+              v-for="(item,index) in client.client"
+              :key="index"
+            >
+              <div class="bg">
+                <image
+                  class="itemIcon"
+                  :mode="mode"
+                  :src="item.image"
+                  lazy-load
+                ></image>
+                <div class="right">
+                  <div class="itemTitle">{{item.title}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部 -->
+        <footerbox :footer="footer" />
+
+      </div>
+      <cutting
+        :rs="getData"
+        v-if="show==2"
+      />
+    </transition>
 
   </div>
 </template>
 
 <script>
+import cutting from "../../components/cutting";
+import load from "../../components/load";
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 export default {
@@ -120,7 +133,7 @@ export default {
     return {
       // 页面需要的参数
       mode: "widthFix",
-      show: false,
+      show: 0,
       action: 0,
       // 下面是接口参数
       header: {},
@@ -136,6 +149,8 @@ export default {
     this.getData();
   },
   components: {
+    load,
+    cutting,
     headerbox,
     footerbox
   },
@@ -167,15 +182,21 @@ export default {
             this.xiaochengx = dt.xiaochengx;
             this.cases = dt.case;
             this.client = dt.client;
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+            uni.pageScrollTo({
+              scrollTop: 0,
+              duration: 300
+            });
+          } else {
+            this.show = 2;
           }
-          this.show = true;
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
-          uni.pageScrollTo({
-            scrollTop: 0,
-            duration: 300
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }

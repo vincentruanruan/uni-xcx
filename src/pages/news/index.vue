@@ -1,78 +1,91 @@
 <template>
   <view class="news">
-
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      drop="false"
-      hasPadding="true"
-    />
-
-    <!-- banner -->
-    <div class="banner">
-      <image
-        class="bg"
-        :src="banner.news"
-        :mode="mode"
-      ></image>
-    </div>
-
-    <!-- 按钮组 -->
-    <div class="btn-group">
-      <div
-        :class="action == item.id?'item action':'item'"
-        v-for="(item,index) in categorys"
-        :key="index"
-        :data-id="item.id"
-        @click="changeActon"
-      >
-        {{item.categoryname}}
-      </div>
-    </div>
-
-    <view
-      v-if="show"
-      class="uni-flex uni-row news"
-      style="flex-wrap: wrap;"
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
     >
-      <view
-        v-for="(item,index) in list"
-        :key="index"
-        class="item"
-        :data-id="item.id"
-        @click="gotoDesc"
-      >
-        <view class="bg uni-flex uni-row">
-          <view class="left">
-            <view class="month">{{item.month}}</view>
-            <view class="year">{{item.year}}</view>
-          </view>
-          <view class="right">
-            <view class="inner">
-              <view class="bg">
-                <view class="itemTitle">{{item.title}}</view>
-                <view class="itemDesc">{{item.abstract}}</view>
+      <load v-if="show==0" />
+      <div v-if="show==1">
+
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          drop="false"
+          hasPadding="true"
+        />
+
+        <!-- banner -->
+        <div class="banner">
+          <image
+            class="bg"
+            :src="banner.news"
+            :mode="mode"
+          ></image>
+        </div>
+
+        <!-- 按钮组 -->
+        <div class="btn-group">
+          <div
+            :class="action == item.id?'item action':'item'"
+            v-for="(item,index) in categorys"
+            :key="index"
+            :data-id="item.id"
+            @click="changeActon"
+          >
+            {{item.categoryname}}
+          </div>
+        </div>
+
+        <view
+          class="uni-flex uni-row news"
+          style="flex-wrap: wrap;"
+        >
+          <view
+            v-for="(item,index) in list"
+            :key="index"
+            class="item"
+            :data-id="item.id"
+            @click="gotoDesc"
+          >
+            <view class="bg uni-flex uni-row">
+              <view class="left">
+                <view class="month">{{item.month}}</view>
+                <view class="year">{{item.year}}</view>
+              </view>
+              <view class="right">
+                <view class="inner">
+                  <view class="bg">
+                    <view class="itemTitle">{{item.title}}</view>
+                    <view class="itemDesc">{{item.abstract}}</view>
+                  </view>
+                </view>
               </view>
             </view>
           </view>
         </view>
-      </view>
-    </view>
 
-    <!-- 分页 -->
-    <pagebox
-      :change="pageChange"
-      :current="nowPage"
-      :total="allpage"
-    ></pagebox>
+        <!-- 分页 -->
+        <pagebox
+          :change="pageChange"
+          :current="nowPage"
+          :total="allpage"
+        ></pagebox>
 
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
+        <!-- 底部 -->
+        <footerbox :footer="footer" />
+      </div>
+      <cutting
+        :rs="getData"
+        v-if="show==2"
+      />
+    </transition>
 
   </view>
 </template>
     
 <script>
+import cutting from "../../components/cutting";
+import load from "../../components/load";
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 import pagebox from "../../components/pagebox";
@@ -82,7 +95,7 @@ export default {
     return {
       // 页面需要的参数
       mode: "widthFix",
-      show: false,
+      show: 0,
       action: 0,
       nowPage: 1,
       // 下面是接口参数
@@ -98,8 +111,8 @@ export default {
     };
   },
   onLoad(option) {
-    if(option.action){
-      this.action=option.action
+    if (option.action) {
+      this.action = option.action;
     }
     this.getData();
     this.$ee.on("descback", res => {
@@ -110,6 +123,8 @@ export default {
     });
   },
   components: {
+    load,
+    cutting,
     headerbox,
     footerbox,
     pagebox
@@ -161,15 +176,21 @@ export default {
             this.allpage = dt.allpage;
             this.next = dt.next;
             this.prev = dt.prev;
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+            uni.pageScrollTo({
+              scrollTop: 0,
+              duration: 300
+            });
+          } else {
+            this.show = 2;
           }
-          this.show = true;
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
-          uni.pageScrollTo({
-            scrollTop: 0,
-            duration: 300
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }

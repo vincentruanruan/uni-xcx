@@ -1,11 +1,10 @@
 <template>
-  <view class='index-group develop-group' >
+  <view class='index-group develop-group'>
     <view class='title'>
       <view class='dot'></view>{{develop.titlekflc}}
     </view>
-    <view class="bgBlue" v-if="show"></view>
+    <view class="bgBlue"></view>
     <view
-      v-if="show"
       class="uni-flex uni-row develop"
       style="flex-wrap: wrap;"
     >
@@ -19,7 +18,6 @@
             class="itemIcon"
             :mode="mode"
             :src="item.image"
-            lazy-load
           ></image>
           <view class="itemTitle">{{item.title}}</view>
           <view class="itemDesc">{{item.miaoshu}}</view>
@@ -38,16 +36,10 @@ export default {
   },
   data() {
     return {
-      show:false,
       mode: "widthFix"
     };
   },
-  mounted() {},
-  updated() {
-    if(this.develop){
-      this.show=true
-    }
-  },
+  mounted() {}
 };
 </script>
 

@@ -20,7 +20,6 @@
                 class="swiper-image"
                 :mode="mode"
                 :src="item"
-                
               ></image>
             </view>
           </swiper-item>

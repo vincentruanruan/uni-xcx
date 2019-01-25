@@ -1,70 +1,78 @@
 <template>
   <view class="contact">
-
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      drop="false"
-      hasPadding="true"
-    />
-    <!-- banner -->
-    <div class="banner">
-      <image
-        class="bg"
-        :src="banner"
-        :mode="mode"
-      ></image>
-    </div>
-
-    <!-- 内容 -->
-    <div
-      class="inner"
-      v-if="show"
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
     >
+      <load v-if="show==0" />
+      <div v-if="show==1">
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          drop="false"
+          hasPadding="true"
+        />
+        <!-- banner -->
+        <div class="banner">
+          <image
+            class="bg"
+            :src="banner"
+            :mode="mode"
+          ></image>
+        </div>
 
-      <div class="p1">{{contact.company}}</div>
-      <div class="p2">{{contact.url}}</div>
-      <div class="p3">{{contact.dianhua}}</div>
-      <div class="p4">
-        <div class="it">Phone: {{contact.shouji}}</div class="it">
-        <div class="it">QQ: {{contact.qq}}</div class="it">
+        <!-- 内容 -->
+        <div class="inner">
+
+          <div class="p1">{{contact.company}}</div>
+          <div class="p2">{{contact.url}}</div>
+          <div class="p3">{{contact.dianhua}}</div>
+          <div class="p4">
+            <div class="it">Phone: {{contact.shouji}}</div class="it">
+            <div class="it">QQ: {{contact.qq}}</div class="it">
+          </div>
+
+          <div class="p5">{{contact.email}}</div>
+          <div class="p6">{{contact.dizhi}}</div>
+          <div class="qrcode">
+            <image
+              class="icon"
+              :src="contact.erweima"
+              :mode="mode"
+            ></image>
+            <div class="title">扫一扫 关注我</div>
+          </div>
+        </div>
+
+        <!-- 地图 -->
+        <view class="uni-common-mt">
+          <view class="mapBg">
+            <map
+              class="map-box"
+              :latitude="latitude"
+              :longitude="longitude"
+              :markers="covers"
+              scale="14"
+            >
+            </map>
+          </view>
+        </view>
+
+        <!-- 底部 -->
+        <footerbox :footer="footer" />
       </div>
+      <cutting
+        :rs="getData"
+        v-if="show==2"
+      />
+    </transition>
 
-      <div class="p5">{{contact.email}}</div>
-      <div class="p6">{{contact.dizhi}}</div>
-      <div class="qrcode">
-        <image
-          class="icon"
-          :src="contact.erweima"
-          :mode="mode"
-        ></image>
-        <div class="title">扫一扫 关注我</div>
-      </div>
-    </div>
-
-    <!-- 地图 -->
-    <view
-      class="uni-common-mt"
-      v-if="show"
-    >
-      <view class="mapBg">
-        <map
-          class="map-box"
-          :latitude="latitude"
-          :longitude="longitude"
-          :markers="covers"
-          scale="14"
-        >
-        </map>
-      </view>
-    </view>
-
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
   </view>
 </template>
 
 <script>
+import cutting from "../../components/cutting";
+import load from "../../components/load";
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 export default {
@@ -72,14 +80,14 @@ export default {
     return {
       // 页面需要的参数
       mode: "widthFix",
-      show: false,
+      show: 0,
       latitude: 39.909,
       longitude: 116.39742,
       covers: [
         {
           latitude: 39.9085,
           longitude: 116.39747,
-          iconPath: "../../static/location.png"
+          iconPath: "/static/location.png"
         }
       ],
       // 下面是接口参数
@@ -94,11 +102,14 @@ export default {
     this.getData();
   },
   components: {
+    load,
+    cutting,
     headerbox,
     footerbox
   },
   methods: {
     getData() {
+      this.show = 0;
       uni.request({
         url:
           this.$store.state.baseUrl +
@@ -116,16 +127,22 @@ export default {
             this.title = dt.title;
             this.banner = dt.banner;
             this.contact = dt.data;
+            let loc = this.contact.ditu.split(",");
+            this.covers[0].longitude = loc[0];
+            this.covers[0].latitude = loc[1];
+            this.longitude = loc[0];
+            this.latitude = loc[1];
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+          } else {
+            this.show = 2;
           }
-          let loc = this.contact.ditu.split(",");
-          this.covers[0].longitude = loc[0];
-          this.covers[0].latitude = loc[1];
-          this.longitude = loc[0];
-          this.latitude = loc[1];
-          this.show = true;
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }

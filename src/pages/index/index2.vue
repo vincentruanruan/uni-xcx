@@ -1,10 +1,19 @@
 <template>
   <view class="index">
-    <loading v-if="show==2" />
-    <cutting
-      :rs="restart"
-      v-if="show==1"
-    />
+
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
+    >
+      <load v-if="show==0" />
+      <div
+        v-if="show==1"
+      >ahahahahah</div>
+      <cutting
+        :rs="restart"
+        v-if="show==2"
+      />
+    </transition>
 
   </view>
 </template>
@@ -13,7 +22,7 @@
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 import cutting from "../../components/cutting";
-import loading from "../../components/loading";
+import load from "../../components/load";
 import banner from "../../components/index/banner";
 import server from "../../components/index/server";
 import develop from "../../components/index/develop";
@@ -39,7 +48,7 @@ export default {
     };
   },
   components: {
-    loading,
+    load,
     cutting,
     headerbox,
     footerbox,
@@ -85,7 +94,7 @@ export default {
       uni.request({
         url:
           this.$store.state.baseUrl +
-          "/web/index.php?c=account&a=welcome&do=indexapi1",
+          "/web/index.php?c=account&a=welcome&do=indexapi",
         data: {},
         method: "POST",
         success: res => {
@@ -101,6 +110,7 @@ export default {
             this.developments = dt.developments;
             this.list = dt.list;
             this.news = dt.news;
+            this.show = 1;
             uni.setNavigationBarTitle({
               title: this.title
             });

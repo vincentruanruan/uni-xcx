@@ -1,43 +1,56 @@
 <template>
-  <view class="index">
 
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      :drop="drop"
+  <transition
+    enter-active-class="bounceIn"
+    leave-active-class="bounceOut"
+  >
+    <load v-if="show==0" />
+    <div v-if="show==1">
+      <view class="index">
+
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          :drop="drop"
+        />
+
+        <!-- 轮播 -->
+        <banner :carouse="carouse" />
+
+        <!-- 服务 -->
+        <server :list="list" />
+
+        <!-- 案例 -->
+        <cases :cases="cases" />
+
+        <!-- 开发 -->
+        <develop :develop="developments" />
+
+        <!-- 新闻 -->
+        <news :news="news" />
+
+        <!-- 底部 -->
+        <footerbox :footer="footer" />
+      </view>
+    </div>
+    <cutting
+      :rs="getData"
+      v-if="show==2"
     />
+  </transition>
 
-    <!-- 轮播 -->
-    <banner :carouse="carouse" />
-
-    <!-- 服务 -->
-    <server :list="list" />
-
-    <!-- 案例 -->
-    <cases :cases="cases" />
-
-    <!-- 开发 -->
-    <develop :develop="developments" />
-
-    <!-- 新闻 -->
-    <news :news="news" />
-
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
-  </view>
 </template>
 
 <script>
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 import cutting from "../../components/cutting";
+import load from "../../components/load";
 import banner from "../../components/index/banner";
 import server from "../../components/index/server";
 import develop from "../../components/index/develop";
 import news from "../../components/index/news";
 import cases from "../../components/index/cases";
-
-
 
 export default {
   data() {
@@ -45,6 +58,7 @@ export default {
       // 页面需要的参数
       drop: false,
       gotoUrl: "",
+      show: 0,
       // 下面是接口参数
       header: {},
       footer: {},
@@ -57,6 +71,7 @@ export default {
     };
   },
   components: {
+    load,
     cutting,
     headerbox,
     footerbox,
@@ -93,6 +108,7 @@ export default {
   },
   methods: {
     getData() {
+      this.show = 0;
       uni.request({
         url:
           this.$store.state.baseUrl +
@@ -112,10 +128,17 @@ export default {
             this.developments = dt.developments;
             this.list = dt.list;
             this.news = dt.news;
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+          } else {
+            this.show = 2;
           }
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }

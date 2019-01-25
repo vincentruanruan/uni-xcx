@@ -28,6 +28,7 @@
     "mpvue-wxparse": "^0.6.5",
     "onfire.js": "^2.0.0",
     "vue": "^2.5.21",
+    "vue2-animate": "^2.1.0",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

@@ -1,92 +1,106 @@
 <template>
   <div class="dingzhi">
 
-    <!-- 头部 -->
-    <headerbox
-      :header="header"
-      drop="false"
-      hasPadding="true"
-    />
+    <transition
+      enter-active-class="bounceIn"
+      leave-active-class="bounceOut"
+    >
+      <load v-if="show==0" />
+      <div v-if="show==1">
+        <!-- 头部 -->
+        <headerbox
+          :header="header"
+          drop="false"
+          hasPadding="true"
+        />
 
-    <!-- banner -->
-    <div class="banner">
-      <image
-        class="bg"
-        :src="banner.dingzhi"
-        :mode="mode"
-      ></image>
-      <div class="title">{{title}}</div>
-    </div>
+        <!-- banner -->
+        <div class="banner">
+          <image
+            class="bg"
+            :src="banner.dingzhi"
+            :mode="mode"
+          ></image>
+          <div class="title">{{title}}</div>
+        </div>
 
-    <!-- 我们能为您做什么 -->
-    <div class="uni-row group cando">
-      <div class="title-cn">{{cando.title}}</div>
-      <div class="title-en">{{cando.subhead}}</div>
-      <div class="list">
-        <div
-          class="item"
-          v-for="(item,index) in cando.cando"
-          :key="index"
-        >
+        <!-- 我们能为您做什么 -->
+        <div class="uni-row group cando">
+          <div class="title-cn">{{cando.title}}</div>
+          <div class="title-en">{{cando.subhead}}</div>
+          <div class="list">
+            <div
+              class="item"
+              v-for="(item,index) in cando.cando"
+              :key="index"
+            >
+              <div class="bg">
+                <image
+                  class="itemIcon"
+                  :mode="mode"
+                  :src="item.image"
+                  lazy-load
+                ></image>
+                <div class="right">
+                  <div class="itemTitle">{{item.title}}</div>
+                  <div class="itemDesc">{{item.miaoshu}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 我们的优势 -->
+        <div class="group youshi">
+          <div class="title-cn">{{youshi.title}}</div>
+          <div class="title-en">{{youshi.subhead}}</div>
+          <div class="list uni-row uni-flex">
+            <div
+              class="item uni-flex-item"
+              v-for="(item,index) in youshi.youshi"
+              :key="index"
+            >
+              <div class="bg">
+                <div class="circle"></div>
+                <div class="num">{{item.num}}</div>
+                <div class="itemTitle">{{item.title}}</div>
+                <div class="itemDesc">
+                  <wxParse :content="item.miaoshu" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 定制服务流程 -->
+        <div class="group process">
+          <div class="title-cn">{{process.title}}</div>
+          <div class="title-en">{{process.subhead}}</div>
           <div class="bg">
             <image
               class="itemIcon"
               :mode="mode"
-              :src="item.image"
+              :src="process.dzt"
               lazy-load
             ></image>
-            <div class="right">
-              <div class="itemTitle">{{item.title}}</div>
-              <div class="itemDesc">{{item.miaoshu}}</div>
-            </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- 我们的优势 -->
-    <div class="group youshi">
-      <div class="title-cn">{{youshi.title}}</div>
-      <div class="title-en">{{youshi.subhead}}</div>
-      <div class="list uni-row uni-flex">
-        <div
-          class="item uni-flex-item"
-          v-for="(item,index) in youshi.youshi"
-          :key="index"
-        >
-          <div class="bg">
-            <div class="circle"></div>
-            <div class="num">{{item.num}}</div>
-            <div class="itemTitle">{{item.title}}</div>
-            <div class="itemDesc">
-              <wxParse :content="item.miaoshu" />
-            </div>
-          </div>
-        </div>
+        <!-- 底部 -->
+        <footerbox :footer="footer" />
       </div>
-    </div>
-
-    <!-- 定制服务流程 -->
-    <div class="group process">
-      <div class="title-cn">{{process.title}}</div>
-      <div class="title-en">{{process.subhead}}</div>
-      <div class="bg">
-        <image
-          class="itemIcon"
-          :mode="mode"
-          :src="process.dzt"
-          lazy-load
-        ></image>
-      </div>
-    </div>
-
-    <!-- 底部 -->
-    <footerbox :footer="footer" />
+      <cutting
+        :rs="getData"
+        v-if="show==2"
+      />
+    </transition>
 
   </div>
 </template>
 
 <script>
+import cutting from "../../components/cutting";
+import load from "../../components/load";
 import headerbox from "../../components/headerbox";
 import footerbox from "../../components/footerbox";
 import wxParse from "mpvue-wxparse";
@@ -95,7 +109,7 @@ export default {
     return {
       // 页面需要的参数
       mode: "widthFix",
-      show: false,
+      show: 0,
       action: 0,
       // 下面是接口参数
       header: {},
@@ -111,6 +125,8 @@ export default {
     this.getData();
   },
   components: {
+    load,
+    cutting,
     headerbox,
     footerbox,
     wxParse
@@ -122,6 +138,7 @@ export default {
     getData() {
       // console.log("cid " + this.action);
       // console.log("nowPage " + this.nowPage);
+      this.show = 0;
       uni.request({
         url:
           this.$store.state.baseUrl +
@@ -141,15 +158,20 @@ export default {
             this.cando = dt.cando;
             this.youshi = dt.youshi;
             this.process = dt.process;
+            this.show = 1;
+            uni.setNavigationBarTitle({
+              title: this.title
+            });
+            for (let i = 0; i < this.youshi.youshi.length; i++) {
+              this.youshi.youshi[i].num = this.prefixInteger(i + 1, 2);
+            }
+          } else {
+            this.show = 2;
           }
-          this.show = true;
-          uni.setNavigationBarTitle({
-            title: this.title
-          });
-
-          for (let i = 0; i < this.youshi.youshi.length; i++) {
-            this.youshi.youshi[i].num = this.prefixInteger(i + 1, 2);
-          }
+        },
+        fail: err => {
+          // console.log(err)
+          this.show = 2;
         }
       });
     }
