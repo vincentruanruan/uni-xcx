@@ -8,6 +8,8 @@ const store = new Vuex.Store({
             "content-type": "application/x-www-form-urlencoded"
         },
         method: "POST",
+        enterActice: "fadeIn",
+        leaveActice: "fadeOut",
     },
     mutations: {
 

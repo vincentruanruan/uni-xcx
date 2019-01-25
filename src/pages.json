@@ -5,44 +5,80 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "xcx"
+				"titleNView": false
 			}
 		},
 		{
-			"path": "pages/index/index2"
+			"path": "pages/index/index2",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/solve/index"
+			"path": "pages/solve/index",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/solve/desc"
+			"path": "pages/solve/desc",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/xiaochengxu/index"
+			"path": "pages/xiaochengxu/index",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/dingzhi/index"
+			"path": "pages/dingzhi/index",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/daili/index"
+			"path": "pages/daili/index",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/news/index"
+			"path": "pages/news/index",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/news/desc"
+			"path": "pages/news/desc",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/about/index"
+			"path": "pages/about/index",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/contact/index"
+			"path": "pages/contact/index",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/help/desc"
+			"path": "pages/help/desc",
+			"style": {
+				"titleNView": false
+			}
 		},
 		{
-			"path": "pages/help/index"
+			"path": "pages/help/index",
+			"style": {
+				"titleNView": false
+			}
 		}
 
 	],

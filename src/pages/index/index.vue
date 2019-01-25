@@ -1,8 +1,9 @@
 <template>
 
   <transition
-    enter-active-class="bounceIn"
-    leave-active-class="bounceOut"
+    style="animation-duration:0.2s !important;"
+    :enter-active-class="$store.state.enterActice"
+    :leave-active-class="$store.state.leaveActice"
   >
     <load v-if="show==0" />
     <div v-if="show==1">
