@@ -1,45 +1,21 @@
 <template>
+  <view class="index">
 
-  <transition
-    style="animation-duration:0.2s !important;"
-    :enter-active-class="$store.state.enterActice"
-    :leave-active-class="$store.state.leaveActice"
-  >
-    <load v-if="show==0" />
-    <div v-if="show==1">
-      <view class="index">
+    <transition
+      :enter-active-class="$store.state.enterActice"
+      :leave-active-class="$store.state.leaveActice"
+    >
+      <load v-if="show==0" />
+      <div
+        v-if="show==1"
+      >ahahahahah</div>
+      <cutting
+        :rs="restart"
+        v-if="show==2"
+      />
+    </transition>
 
-        <!-- 头部 -->
-        <headerbox
-          :header="header"
-          :drop="drop"
-        />
-
-        <!-- 轮播 -->
-        <banner :carouse="carouse" />
-
-        <!-- 服务 -->
-        <server :list="list" />
-
-        <!-- 案例 -->
-        <cases :cases="cases" />
-
-        <!-- 开发 -->
-        <develop :develop="developments" />
-
-        <!-- 新闻 -->
-        <news :news="news" />
-
-        <!-- 底部 -->
-        <footerbox :footer="footer" />
-      </view>
-    </div>
-    <cutting
-      :rs="getData"
-      v-if="show==2"
-    />
-  </transition>
-
+  </view>
 </template>
 
 <script>
@@ -108,8 +84,13 @@ export default {
     obj.scrollTop > 30 ? (this.drop = true) : (this.drop = false);
   },
   methods: {
-    getData() {
+    restart() {
       this.show = 0;
+      setTimeout(() => {
+        this.getData();
+      }, 1500);
+    },
+    getData() {
       uni.request({
         url:
           this.$store.state.baseUrl +
