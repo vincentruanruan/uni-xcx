@@ -33,7 +33,7 @@
     "@dcloudio/webpack-uni-mp-loader": "*",
     "@dcloudio/webpack-uni-pages-loader": "*",
     "@vue/cli-plugin-babel": "3.3.0",
-    "@vue/cli-service": "^3.3.0",
+    "@vue/cli-service": "^5.0.8",
     "babel-plugin-import": "^1.11.0",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
